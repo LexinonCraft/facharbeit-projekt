@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.lexinonc.voxeleditor'
+version '1.0-SNAPSHOT'
+
+/*sourceSets {
+    main {
+        java.srcDir 'src/main/java'
+        resources.srcDir 'src/main/resources'
+    }
+    test {
+        java.srcDir 'src/test/java'
+    }
+}*/
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
+
+application.mainClass = 'com.lexinonc.voxeleditor.Main'
