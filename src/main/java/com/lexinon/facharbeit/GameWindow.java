@@ -5,23 +5,23 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11C.glViewport;
 
-public class Window {
+public class GameWindow {
 
-    private static Window window;
+    private static GameWindow window;
 
     private long handle;
     private boolean trackMouse = false;
 
-    public static Window getOrCreate() {
+    public static GameWindow getOrCreate() {
         if(window != null)
             return window;
-        window = new Window();
+        window = new GameWindow();
         return window.init();
     }
 
-    private Window() {}
+    private GameWindow() {}
 
-    private Window init() {
+    private GameWindow init() {
         if(!glfwInit())
             throw new IllegalStateException("GLFW could not be initialized!");
 
@@ -57,17 +57,17 @@ public class Window {
         return window;
     }
 
-    public Window show() {
+    public GameWindow show() {
         glfwShowWindow(handle);
         return window;
     }
 
-    public Window hide() {
+    public GameWindow hide() {
         glfwHideWindow(handle);
         return window;
     }
 
-    public Window update() {
+    public GameWindow update() {
         glfwSwapBuffers(handle);
         glfwPollEvents();
         return window;

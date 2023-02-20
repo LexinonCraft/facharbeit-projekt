@@ -1,7 +1,5 @@
 package com.lexinon.facharbeit;
 
-import javax.swing.*;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -23,7 +21,7 @@ public class Main {
         button.setSize(200, 100);
         frame.add(button);*/
 
-        Window window = Window.getOrCreate();
+        GameWindow window = GameWindow.getOrCreate();
         window.show();
         while(!window.shouldClose()) {
             window.update();
