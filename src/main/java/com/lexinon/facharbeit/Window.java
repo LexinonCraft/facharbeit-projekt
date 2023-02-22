@@ -6,6 +6,8 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import java.nio.IntBuffer;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11C.glViewport;
@@ -14,7 +16,6 @@ public class Window {
 
     private long handle;
     private long monitor;
-    private boolean trackMouse = false;
     private boolean fullscreen = false;
     private int windowedXPos, windowedYPos;
     private int windowedWidth, windowedHeight;
@@ -22,6 +23,20 @@ public class Window {
     private int fullscreenRefreshRate = 0;
     private boolean sizeChanged = true;
     private String title;
+    private final Queue<Runnable> eventQueue = new LinkedBlockingQueue<>();
+
+    private boolean trackMouse = false;
+    private double lastMouseXPos = 0, lastMouseYPos = 0;
+    private double lastMouseXMovement = 0, lastMouseYMovement = 0;
+    private double currentMouseXPos = 0, currentMouseYPos = 0;
+    private double currentMouseXMovement = 0, currentMouseYMovement = 0;
+
+    private boolean keyWPressed = false;
+    private boolean keyAPressed = false;
+    private boolean keySPressed = false;
+    private boolean keyDPressed = false;
+    private boolean spacebarPressed = false;
+    private boolean shiftPressed = false;
 
     public Window(int windowedWidth, int windowedHeight, String title) {
         this.windowedWidth = windowedWidth;
@@ -57,6 +72,7 @@ public class Window {
         glfwSetFramebufferSizeCallback(handle, this::framebufferSizeCallback);
         glfwSetKeyCallback(handle, this::keyCallback);
         glfwSetMouseButtonCallback(handle, this::mouseButtonCallback);
+        glfwSetCursorPosCallback(handle, this::cursorPosCallback);
 
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -82,6 +98,24 @@ public class Window {
     public void update() {
         glfwSwapBuffers(handle);
         glfwPollEvents();
+
+        lastMouseXPos = currentMouseXPos;
+        lastMouseYPos = currentMouseYPos;
+        lastMouseXMovement = currentMouseXMovement;
+        lastMouseYMovement = currentMouseYMovement;
+        currentMouseXMovement = 0;
+        currentMouseYMovement = 0;
+
+        eventQueue.forEach(Runnable::run);
+        eventQueue.clear();
+    }
+
+    public double getMouseXMovement() {
+        return lastMouseXMovement;
+    }
+
+    public double getMouseYMovement() {
+        return lastMouseYMovement;
     }
 
     private void makeFullScreen() {
@@ -179,6 +213,30 @@ public class Window {
         return sizeChanged;
     }
 
+    public boolean isKeyWPressed() {
+        return keyWPressed;
+    }
+
+    public boolean isKeyAPressed() {
+        return keyAPressed;
+    }
+
+    public boolean isKeySPressed() {
+        return keySPressed;
+    }
+
+    public boolean isKeyDPressed() {
+        return keyDPressed;
+    }
+
+    public boolean isSpacebarPressed() {
+        return spacebarPressed;
+    }
+
+    public boolean isShiftPressed() {
+        return shiftPressed;
+    }
+
     private void framebufferSizeCallback(long handle, int width, int height) {
         framebufferWidth = width;
         framebufferHeight = height;
@@ -187,21 +245,73 @@ public class Window {
     }
 
     private void keyCallback(long handle, int key, int scancode, int action, int mods) {
-        if(key == GLFW_KEY_ESCAPE && trackMouse && action == GLFW_PRESS) {
-            trackMouse = false;
-            glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        }
+        eventQueue.add(() -> {
+            if(key == GLFW_KEY_ESCAPE && trackMouse && action == GLFW_PRESS) {
+                trackMouse = false;
+                glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
 
-        if(key == GLFW_KEY_F11 && action == GLFW_PRESS)
-            toggleFullscreen();
-        if(key == GLFW_KEY_F12 && action == GLFW_PRESS)
-            toggleFullscreenMonitor();
+            if(key == GLFW_KEY_F11 && action == GLFW_PRESS)
+                toggleFullscreen();
+            if(key == GLFW_KEY_F12 && action == GLFW_PRESS)
+                toggleFullscreenMonitor();
+
+            switch(key) {
+                case GLFW_KEY_W -> {
+                    if (action == GLFW_PRESS)
+                        keyWPressed = true;
+                    if (action == GLFW_RELEASE)
+                        keyWPressed = false;
+                }
+                case GLFW_KEY_A -> {
+                    if (action == GLFW_PRESS)
+                        keyAPressed = true;
+                    if (action == GLFW_RELEASE)
+                        keyAPressed = false;
+                }
+                case GLFW_KEY_S -> {
+                    if (action == GLFW_PRESS)
+                        keySPressed = true;
+                    if (action == GLFW_RELEASE)
+                        keySPressed = false;
+                }
+                case GLFW_KEY_D -> {
+                    if (action == GLFW_PRESS)
+                        keyDPressed = true;
+                    if (action == GLFW_RELEASE)
+                        keyDPressed = false;
+                }
+                case GLFW_KEY_SPACE -> {
+                    if (action == GLFW_PRESS)
+                        spacebarPressed = true;
+                    if (action == GLFW_RELEASE)
+                        spacebarPressed = false;
+                }
+                case GLFW_KEY_LEFT_SHIFT -> {
+                    if (action == GLFW_PRESS)
+                        shiftPressed = true;
+                    if (action == GLFW_RELEASE)
+                        shiftPressed = false;
+                }
+            }
+        });
     }
 
     private void mouseButtonCallback(long handle, int button, int action, int mods) {
-        if(button == GLFW_MOUSE_BUTTON_1 && !trackMouse) {
-            trackMouse = true;
-            glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        eventQueue.add(() -> {
+            if(button == GLFW_MOUSE_BUTTON_1 && !trackMouse) {
+                trackMouse = true;
+                glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            }
+        });
+    }
+
+    private void cursorPosCallback(long handle, double xPos, double yPos) {
+        if(trackMouse) {
+            currentMouseXMovement = xPos - lastMouseXPos;
+            currentMouseYMovement = yPos - lastMouseYPos;
+            currentMouseXPos = xPos;
+            currentMouseYPos = yPos;
         }
     }
 
