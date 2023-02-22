@@ -19,6 +19,8 @@ public class Window {
     private int windowedXPos, windowedYPos;
     private int windowedWidth, windowedHeight;
     private int framebufferWidth, framebufferHeight;
+    private int fullscreenRefreshRate = 0;
+    private boolean sizeChanged = true;
     private String title;
 
     public Window(int windowedWidth, int windowedHeight, String title) {
@@ -98,11 +100,13 @@ public class Window {
             throw new IllegalStateException("An error occurred while making the window fullscreen!");
         glfwSetWindowMonitor(handle, monitor, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate());
         fullscreen = true;
+        fullscreenRefreshRate = vidMode.refreshRate();
     }
 
     private void makeWindowed() {
         glfwSetWindowMonitor(handle, 0, windowedXPos, windowedYPos, windowedWidth, windowedHeight, 0);
         fullscreen = false;
+        fullscreenRefreshRate = 0;
     }
 
     public void toggleFullscreen() {
@@ -110,6 +114,7 @@ public class Window {
             makeWindowed();
         else
             makeFullScreen();
+        sizeChanged = true;
     }
 
     public void toggleFullscreenMonitor() {
@@ -133,8 +138,11 @@ public class Window {
             monitor = glfwGetPrimaryMonitor();
         if(fullscreen) {
             GLFWVidMode vidMode = glfwGetVideoMode(monitor);
+            if(vidMode == null)
+                throw new IllegalStateException("An error occurred while toggling the fullscreen monitor!");
             glfwSetWindowMonitor(handle, monitor, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate());
         }
+        sizeChanged = true;
     }
 
     public boolean shouldClose() {
@@ -150,9 +158,30 @@ public class Window {
         glfwSetWindowTitle(handle, title);
     }
 
+    public int getFramebufferWidth() {
+        return framebufferWidth;
+    }
+
+    public int getFramebufferHeight() {
+        return framebufferHeight;
+    }
+
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
+    public void lockSize() {
+        sizeChanged = false;
+    }
+
+    public boolean hasSizeChanged() {
+        return sizeChanged;
+    }
+
     private void framebufferSizeCallback(long handle, int width, int height) {
         framebufferWidth = width;
         framebufferHeight = height;
+        sizeChanged = true;
         glViewport(0, 0, width, height);
     }
 
