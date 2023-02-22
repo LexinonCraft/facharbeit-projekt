@@ -48,7 +48,6 @@ public class GameWindow {
         glfwSetKeyCallback(handle, this::keyCallback);
         glfwSetMouseButtonCallback(handle, this::mouseButtonCallback);
 
-        glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
