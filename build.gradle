@@ -8,7 +8,7 @@ plugins {
 group 'com.lexinon.facharbeit'
 version '1.0-SNAPSHOT'
 
-/*sourceSets {
+sourceSets {
     main {
         java.srcDir 'src/main/java'
         resources.srcDir 'src/main/resources'
@@ -16,7 +16,11 @@ version '1.0-SNAPSHOT'
     test {
         java.srcDir 'src/test/java'
     }
-}*/
+}
+
+tasks.getByName('processResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
