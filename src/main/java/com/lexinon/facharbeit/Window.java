@@ -310,9 +310,9 @@ public class Window {
         if(trackMouse) {
             currentMouseXMovement = xPos - lastMouseXPos;
             currentMouseYMovement = yPos - lastMouseYPos;
-            currentMouseXPos = xPos;
-            currentMouseYPos = yPos;
         }
+        currentMouseXPos = xPos;
+        currentMouseYPos = yPos;
     }
 
 }

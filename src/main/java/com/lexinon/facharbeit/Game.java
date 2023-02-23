@@ -127,7 +127,7 @@ public class Game {
         pitch -= window.getMouseYMovement() * delta / 1_000_000_000f * 5;
         pitch = (float) Math.max(pitch, -0.5 * Math.PI);
         pitch = (float) Math.min(pitch, 0.5 * Math.PI);
-        System.out.println(pitch);
+        //System.out.println(pitch);
         camera.setYaw(yaw);
         camera.setPitch(pitch);
 
