@@ -165,8 +165,8 @@ public class Game {
 
         float yaw = camera.getYaw();
         float pitch = camera.getPitch();
-        yaw += window.getMouseXMovement() * delta / 1_000_000_000f * 5;
-        pitch -= window.getMouseYMovement() * delta / 1_000_000_000f * 5;
+        yaw += window.getMouseXMovement() / 500f;
+        pitch -= window.getMouseYMovement() / 500f;
         pitch = (float) Math.max(pitch, -0.5 * Math.PI);
         pitch = (float) Math.min(pitch, 0.5 * Math.PI);
         //System.out.println(pitch);
