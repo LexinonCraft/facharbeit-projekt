@@ -18,6 +18,8 @@ public class Game {
     private Window window;
     private Camera camera;
 
+    private Mesh testMesh;
+
     private int matrixLoc;
     private FloatBuffer cameraMatrix;
 
@@ -76,7 +78,7 @@ public class Game {
 
         glUseProgram(programId);
 
-        int testArray = glGenVertexArrays();
+        /*int testArray = glGenVertexArrays();
         glBindVertexArray(testArray);
 
         int testBuffer = glGenBuffers();
@@ -104,7 +106,17 @@ public class Game {
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 28, 0);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 28, 12);
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(1);*/
+
+        MeshBuilder meshBuilder = new MeshBuilder(6);
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.UP, 1);
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.DOWN, 1);
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.NORTH, 2);
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.EAST, 3);
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.SOUTH, 2);
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.WEST, 3);
+
+        testMesh = meshBuilder.toMesh();
 
         glEnable(GL_DEPTH_TEST);
 
@@ -144,7 +156,7 @@ public class Game {
 
         glClearColor(0.74609375f, 0.9140625f, 0.95703125f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDrawArrays(GL_TRIANGLES, 0, 12);
+        testMesh.draw();
 
         window.update();
 
