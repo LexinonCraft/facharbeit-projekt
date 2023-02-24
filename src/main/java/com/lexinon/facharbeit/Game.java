@@ -1,5 +1,6 @@
 package com.lexinon.facharbeit;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
@@ -17,8 +18,10 @@ public class Game {
 
     private Window window;
     private Camera camera;
+    private TextureAtlas textureAtlas;
 
     private Mesh testMesh;
+    public int testShader;
 
     private int matrixLoc;
     private FloatBuffer cameraMatrix;
@@ -72,6 +75,7 @@ public class Game {
         glCompileShader(fragmentShaderId);
 
         int programId = glCreateProgram();
+        testShader = programId;
         glAttachShader(programId, vertexShaderId);
         glAttachShader(programId, fragmentShaderId);
         glLinkProgram(programId);
@@ -108,17 +112,43 @@ public class Game {
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 28, 12);
         glEnableVertexAttribArray(1);*/
 
-        MeshBuilder meshBuilder = new MeshBuilder(6);
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.UP, 1);
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.DOWN, 1);
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.NORTH, 2);
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.EAST, 3);
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.SOUTH, 2);
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.WEST, 3);
+        MeshBuilder meshBuilder = new MeshBuilder(24);
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.UP, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.DOWN, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.NORTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.EAST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.SOUTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.WEST, new Vector2f(9, 17).div(32));
+
+        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.UP, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.DOWN, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.NORTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.EAST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.SOUTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.WEST, new Vector2f(9, 17).div(32));
+
+        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.UP, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.DOWN, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.NORTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.EAST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.SOUTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.WEST, new Vector2f(9, 17).div(32));
+
+        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.UP, new Vector2f(6, 18).div(32));
+        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.DOWN, new Vector2f(2, 1).div(32));
+        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.NORTH, new Vector2f(2, 0).div(32));
+        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.EAST, new Vector2f(2, 0).div(32));
+        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.SOUTH, new Vector2f(2, 0).div(32));
+        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.WEST, new Vector2f(2, 0).div(32));
 
         testMesh = meshBuilder.toMesh();
 
+        textureAtlas = new TextureAtlas();
+        textureAtlas.activate();
+
         glEnable(GL_DEPTH_TEST);
+
+        glEnable(GL_CULL_FACE);
 
         cameraMatrix = BufferUtils.createFloatBuffer(16);
         matrixLoc = glGetUniformLocation(programId, "ViewProjectionMatrix");

@@ -19,7 +19,7 @@ public class Camera {
         pitch = 0f;
         fov = (float) Math.toRadians(90);
         aspectRatio = 1;
-        zNear = 0.001f;
+        zNear = 0.05f;
         zFar = 100f;
         updateViewProjectionMatrix();
     }
