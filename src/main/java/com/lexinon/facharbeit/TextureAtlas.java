@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30C.*;
 public class TextureAtlas {
 
     public static final float SIDE_LENGTH_OF_ONE_TEXTURE = 1f / 32;
-    public static final float TEXTURE_MARGIN = 1f / 9 * SIDE_LENGTH_OF_ONE_TEXTURE;
+    public static final float TEXTURE_MARGIN = 1f / 3 * SIDE_LENGTH_OF_ONE_TEXTURE;
 
     private final int handle;
 
