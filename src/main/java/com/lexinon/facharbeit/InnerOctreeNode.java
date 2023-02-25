@@ -1,5 +1,6 @@
 package com.lexinon.facharbeit;
 
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
@@ -15,15 +16,17 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
     private int nonEmptySubtrees = 0;
 
     @Override
-    public void render() {
-        subtree1.render();
-        subtree2.render();
-        subtree3.render();
-        subtree4.render();
-        subtree5.render();
-        subtree6.render();
-        subtree7.render();
-        subtree8.render();
+    public void render(Vector3i origin, int volumeEdgeLength, Octree octree) {
+        //System.out.println(origin);
+        int half = volumeEdgeLength / 2;
+        subtree1.render(new Vector3i(origin).add(0, 0, 0), half, octree);
+        subtree2.render(new Vector3i(origin).add(0, 0, half), half, octree);
+        subtree3.render(new Vector3i(origin).add(0, half, 0), half, octree);
+        subtree4.render(new Vector3i(origin).add(0, half, half), half, octree);
+        subtree5.render(new Vector3i(origin).add(half, 0, 0), half, octree);
+        subtree6.render(new Vector3i(origin).add(half, 0, half), half, octree);
+        subtree7.render(new Vector3i(origin).add(half, half, 0), half, octree);
+        subtree8.render(new Vector3i(origin).add(half, half, half), half, octree);
     }
 
     @Override
@@ -114,12 +117,32 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
         return null;
     }
 
+    @Override
     public void incrementNonEmptySubtreesCount() {
         nonEmptySubtrees++;
     }
 
+    @Override
     public void decrementNonEmptySubtreesCount() {
         nonEmptySubtrees--;
+    }
+
+    @Override
+    public void print(int depth) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < depth; i++) {
+            stringBuilder.append(".");
+        }
+        String tabs = stringBuilder.toString();
+        System.out.println(tabs + "Inner");
+        subtree1.print(depth + 1);
+        subtree2.print(depth + 1);
+        subtree3.print(depth + 1);
+        subtree4.print(depth + 1);
+        subtree5.print(depth + 1);
+        subtree6.print(depth + 1);
+        subtree7.print(depth + 1);
+        subtree8.print(depth + 1);
     }
 
 }

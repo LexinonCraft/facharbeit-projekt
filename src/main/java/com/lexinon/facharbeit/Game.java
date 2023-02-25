@@ -16,12 +16,14 @@ public class Game {
     private static Game game;
 
     private Window window;
-    private Camera camera;
+    public Camera camera;
     private TextureAtlas textureAtlas;
 
     private Mesh testMesh;
     public int testShader;
     Octree octree;
+
+    public static int voxelCounter = 0;
 
     private int matrixLoc;
     private FloatBuffer cameraMatrix;
@@ -49,6 +51,7 @@ public class Game {
         camera.setEye(new Vector3f(0.5f, 1f, 1f));
         //camera.setEye(new Vector3f(0f, 0f, 2f));
         //camera.setYaw(-0.25f * (float) Math.PI);
+        camera.updateViewProjectionMatrix();
 
         InputStream vertexShaderInputStream = Game.class.getResourceAsStream("/myshader.vert");
         Scanner vertexShaderScanner = new Scanner(vertexShaderInputStream);
@@ -143,37 +146,46 @@ public class Game {
 
         testMesh = meshBuilder.build();*/
 
-        octree = new Octree(4, 3);
+        octree = new Octree(4, 4, this);
         //octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
         //octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
         //octree.addVoxel(new Vector3i(1, 1, 0), Material.CRATE.getId());
 
         //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
 
-        int dings = 20;
-
-        for(int x = 0; x < dings; x++) {
-            for(int y = 0; y < dings; y++) {
-                for (int z = 0; z < dings; z++) {
+        for(int x = -50; x < 50; x++) {
+            for(int y = 0; y < 3; y++) {
+                for (int z = -50; z < 50; z++) {
                     //if(x == 0 && y == 0 && z == 0)
                     //    continue;
-                    octree.addVoxel(new Vector3i(x, y, z), Material.CRATE.getId());
+                    octree.addVoxel(new Vector3i(x, y, z), Material.GRASS.getId());
                 }
             }
         }
 
-        octree.removeVoxel(new Vector3i(0, 0, 0));
+        /*for(int x = 0; x < 20; x++) {
+            for(int y = 0; y < 20; y++) {
+                for (int z = 0; z < 20; z++) {
+                    //if(x == 0 && y == 0 && z == 0)
+                    //    continue;
+                    octree.addVoxel(new Vector3i(x, y, z), Material.GRASS.getId());
+                }
+            }
+        }*/
+
+        octree.print();
+        System.out.println("Voxel count: " + voxelCounter);
+
+        //octree.removeVoxel(new Vector3i(0, 0, 0));
 
         textureAtlas = new TextureAtlas();
         textureAtlas.activate();
 
         glEnable(GL_DEPTH_TEST);
 
-        glEnable(GL_CULL_FACE);
+        glEnable(GL_POLYGON_SMOOTH);
 
-        cameraMatrix = BufferUtils.createFloatBuffer(16);
-        matrixLoc = glGetUniformLocation(programId, "ViewProjectionMatrix");
-        glUniformMatrix4fv(matrixLoc, false, camera.updateViewProjectionMatrix().get(cameraMatrix));
+        glEnable(GL_CULL_FACE);
 
         window.show();
     }
@@ -203,7 +215,7 @@ public class Game {
 
         camera.setAspectRatio((float) window.getFramebufferWidth() / window.getFramebufferHeight());
 
-        glUniformMatrix4fv(matrixLoc, false, camera.updateViewProjectionMatrix().get(cameraMatrix));
+        camera.updateViewProjectionMatrix();
 
         glClearColor(0.74609375f, 0.9140625f, 0.95703125f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

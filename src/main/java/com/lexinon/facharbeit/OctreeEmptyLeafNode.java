@@ -5,7 +5,7 @@ import org.joml.Vector3i;
 public class OctreeEmptyLeafNode implements IOctreeNode {
 
     @Override
-    public void render() {
+    public void render(Vector3i origin, int volumeEdgeLength, Octree octree) {
         // Nothing...
     }
 
@@ -22,4 +22,15 @@ public class OctreeEmptyLeafNode implements IOctreeNode {
     public IOctreeNode removeVoxel(Vector3i pos, IOctreeParentNode parentNode, Octree octree) {
         return this;
     }
+
+    @Override
+    public void print(int depth) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < depth; i++) {
+            stringBuilder.append(".");
+        }
+        String tabs = stringBuilder.toString();
+        System.out.println(tabs + "Empty");
+    }
+
 }

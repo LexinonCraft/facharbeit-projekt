@@ -19,8 +19,14 @@ public class MyTestClass {
     }
 
     public static void main(String[] args) {
-        System.out.println(getIndexByPos(new Vector3i(5, 0, 0), 3));
-        System.out.println(getPosByIndex(5, 3));
+        //System.out.println(1 << 3);
+
+        System.out.println(getIndexByPos(new Vector3i(5, 7, 7), 3));
+        System.out.println(getIndexByPos(new Vector3i(5, 7, 5), 3));
+
+        System.out.println(getIndexByPos(new Vector3i(5, 8, 7), 3));
+        System.out.println(getIndexByPos(new Vector3i(5, 8, 5), 3));
+        //System.out.println(getPosByIndex(5, 3));
 
         //System.out.println(0x80000000 >> 31);
         //System.out.println(Integer.toBinaryString(0x80000000));

@@ -1,5 +1,10 @@
 package com.lexinon.facharbeit;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
+import org.lwjgl.BufferUtils;
+
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL30C.*;
@@ -39,8 +44,15 @@ public class Mesh {
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     }
 
-    public void draw() {
+    public void draw(Vector3i pos, Game game) {
         glBindVertexArray(vao);
+
+        Matrix4f modelViewProjectionMatrix = new Matrix4f(game.camera.getViewProjectionMatrix())
+                .translate(new Vector3f(pos));
+
+        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+        int matrixLoc = glGetUniformLocation(game.testShader, "ModelViewProjectionMatrix");
+        glUniformMatrix4fv(matrixLoc, false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_TRIANGLES, 0, vertices);
     }
 

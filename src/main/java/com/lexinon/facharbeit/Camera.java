@@ -25,11 +25,10 @@ public class Camera {
     }
 
     public Matrix4f updateViewProjectionMatrix() {
-        Matrix4f matrix = new Matrix4f()
+        return viewProjectionMatrix = new Matrix4f()
             .perspective(fov, aspectRatio, zNear, zFar)
                 .lookAt(eye, new Vector3f((float) (Math.sin(yaw) * Math.cos(pitch)), (float) Math.sin(pitch), -(float) (Math.cos(yaw) * Math.cos(pitch))).add(eye),
                         new Vector3f((float) (Math.sin(yaw) * Math.sin(-pitch)), (float) Math.cos(pitch), -(float) (Math.cos(yaw) * Math.sin(-pitch))));
-        return matrix;
     }
 
     public Matrix4f getViewProjectionMatrix() {

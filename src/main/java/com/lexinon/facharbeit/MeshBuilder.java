@@ -5,6 +5,9 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;
 
+import static com.lexinon.facharbeit.TextureAtlas.TEXTURE_MARGIN;
+import static com.lexinon.facharbeit.TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE;
+
 import java.nio.FloatBuffer;
 
 public class MeshBuilder {
@@ -26,10 +29,10 @@ public class MeshBuilder {
         Vector3f vertexPos3 = new Vector3f(voxelPos).add(direction.vertex3);
         Vector3f vertexPos4 = new Vector3f(voxelPos).add(direction.vertex4);
 
-        Vector2f vertexTexCoords1 = new Vector2f(0, TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE).add(texCoords);
-        Vector2f vertexTexCoords2 = new Vector2f(TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE, TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE).add(texCoords);
-        Vector2f vertexTexCoords3 = new Vector2f(TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE, 0).add(texCoords);
-        Vector2f vertexTexCoords4 = new Vector2f(0, 0).add(texCoords);
+        Vector2f vertexTexCoords1 = new Vector2f(TEXTURE_MARGIN, SIDE_LENGTH_OF_ONE_TEXTURE - TEXTURE_MARGIN).add(texCoords);
+        Vector2f vertexTexCoords2 = new Vector2f(SIDE_LENGTH_OF_ONE_TEXTURE - TEXTURE_MARGIN, SIDE_LENGTH_OF_ONE_TEXTURE - TEXTURE_MARGIN).add(texCoords);
+        Vector2f vertexTexCoords3 = new Vector2f(SIDE_LENGTH_OF_ONE_TEXTURE, TEXTURE_MARGIN).add(texCoords);
+        Vector2f vertexTexCoords4 = new Vector2f(TEXTURE_MARGIN, TEXTURE_MARGIN).add(texCoords);
 
         buffer.put(vertexPos1.x);
         buffer.put(vertexPos1.y);

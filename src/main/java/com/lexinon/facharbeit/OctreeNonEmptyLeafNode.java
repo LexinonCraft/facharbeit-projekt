@@ -2,8 +2,6 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector3i;
 
-import java.util.Arrays;
-
 public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
     private final short[] content;                // e.g. [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0), (0, 0, 1), (1, 0, 1), (0, 1, 1), (1, 1, 1)]
@@ -19,11 +17,12 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         edgeLength = 1 << edgeLengthExponent;
         edgeLengthSquared = edgeLength * edgeLength;
         content = new short[edgeLength * edgeLength * edgeLength];
+        System.out.println(content.length);
     }
 
     @Override
-    public void render() {
-        mesh.draw();
+    public void render(Vector3i origin, int volumeEdgeLength, Octree octree) {
+        mesh.draw(origin, octree.getGame());
     }
 
     @Override
@@ -35,6 +34,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
             nonEmptyVoxels++;
         content[getIndexByPos(newPos)] = material;
         updateMesh(octree.doOcclusionTest());
+        Game.voxelCounter++;
         return this;
     }
 
@@ -45,7 +45,6 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
             nonEmptyVoxels--;
         content[getIndexByPos(newPos)] = 0;
         if(nonEmptyVoxels > 0) {
-            System.out.println("Funktioniert");
             updateMesh(octree.doOcclusionTest());
             return this;
         } else {
@@ -61,7 +60,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
         if(doOcclusionTest) {
             for (int i = 0; i < content.length; i++) {
-                constructVoxelFacesWithOcclusionTest(i, meshBuilder, edgeLength, edgeLengthSquared);
+                constructVoxelFacesWithOcclusionTest(i, meshBuilder);
             }
         }
         else {
@@ -73,44 +72,31 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         meshBuilder.build(mesh);
     }
 
-    private void constructVoxelFacesWithOcclusionTest(int i, MeshBuilder meshBuilder, int edgeLength, int edgeLengthSquared) {
+    private void constructVoxelFacesWithOcclusionTest(int i, MeshBuilder meshBuilder) {
         if(content[i] == 0)
             return;
 
-        int topNeighborIndex = i + edgeLength;
-        int bottomNeighborIndex = i - edgeLength;
-        int northNeighborIndex = i + edgeLengthSquared;
-        int eastNeighborIndex = i - 1;
-        int southNeighborIndex = i - edgeLengthSquared;
-        int westNeighborIndex = i + 1;
-
         Vector3i pos = getPosByIndex(i);
 
-        if(voxelEmptyOrOutsideOfVolume(topNeighborIndex))
+        if(pos.y == edgeLength - 1 || content[i + edgeLength] == 0)
             meshBuilder.addFace(pos, Direction.UP, content[i]);
-        if(voxelEmptyOrOutsideOfVolume(bottomNeighborIndex))
+        if(pos.y == 0 || content[i - edgeLength] == 0)
             meshBuilder.addFace(pos, Direction.DOWN, content[i]);
-        if(voxelEmptyOrOutsideOfVolume(northNeighborIndex))
+        if(pos.z == edgeLength - 1 || content[i + edgeLengthSquared] == 0)
             meshBuilder.addFace(pos, Direction.NORTH, content[i]);
-        if(voxelEmptyOrOutsideOfVolume(eastNeighborIndex))
+        if(pos.x == 0 || content[i - 1] == 0)
             meshBuilder.addFace(pos, Direction.EAST, content[i]);
-        if(voxelEmptyOrOutsideOfVolume(southNeighborIndex))
+        if(pos.z == 0 || content[i - edgeLengthSquared] == 0)
             meshBuilder.addFace(pos, Direction.SOUTH, content[i]);
-        if(voxelEmptyOrOutsideOfVolume(westNeighborIndex))
+        if(pos.x == edgeLength - 1 || content[i + 1] == 0)
             meshBuilder.addFace(pos, Direction.WEST, content[i]);
-    }
-
-    private boolean voxelEmptyOrOutsideOfVolume(int i) {
-        if(i < 0 || i >= content.length)
-            return true;
-        return content[i] == 0;
     }
 
     private void constructVoxelFacesWithoutOcclusionTest(int i, MeshBuilder meshBuilder) {
         if(content[i] == 0)
             return;
 
-        Vector3i pos = getPosByIndex(i); // origin!
+        Vector3i pos = getPosByIndex(i);
 
         meshBuilder.addFace(pos, Direction.UP, content[i]);
         meshBuilder.addFace(pos, Direction.DOWN, content[i]);
@@ -123,7 +109,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
     private int getIndexByPos(Vector3i pos) {
         int x_ = pos.x;
         int y_ = pos.y << edgeLengthExponent;
-        int z_ = pos.z << 2 * edgeLengthExponent;
+        int z_ = pos.z << (2 * edgeLengthExponent);
         return x_ + y_ + z_;
     }
 
@@ -132,6 +118,16 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         int y = (i >> edgeLengthExponent) & (((1 << edgeLengthExponent) - 1));
         int z = (i >> 2 * edgeLengthExponent) & (((1 << edgeLengthExponent) - 1));
         return new Vector3i(x, y, z);
+    }
+
+    @Override
+    public void print(int depth) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < depth; i++) {
+            stringBuilder.append(".");
+        }
+        String tabs = stringBuilder.toString();
+        System.out.println(tabs + "Array");
     }
 
 }

@@ -7,18 +7,23 @@ public class Octree implements IOctreeParentNode {
     private IOctreeNode rootNode = new OctreeEmptyLeafNode();
     private final int depth;
     private final int edgeLengthExponent;
+    private final Game game;
 
-    public Octree(int depth, int edgeLengthExponent) {
+    public Octree(int depth, int edgeLengthExponent, Game game) {
         this.depth = depth;
         this.edgeLengthExponent = edgeLengthExponent;
+        this.game = game;
     }
 
     public void render() {
-        rootNode.render();
+        rootNode.render(new Vector3i(-(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1))), 1 << (depth + edgeLengthExponent), this);
     }
 
     public void addVoxel(Vector3i pos, short material) {
-        rootNode = rootNode.addVoxel(pos.mul(1 << (32 - edgeLengthExponent - depth)), material, depth, this, this);
+        int x = (pos.x * (1 << (32 - edgeLengthExponent - depth))) ^ 0x80000000;
+        int y = (pos.y * (1 << (32 - edgeLengthExponent - depth))) ^ 0x80000000;
+        int z = (pos.z * (1 << (32 - edgeLengthExponent - depth))) ^ 0x80000000;
+        rootNode = rootNode.addVoxel(new Vector3i(x, y, z), material, depth, this, this);
     }
 
     public void removeVoxel(Vector3i pos) {
@@ -41,6 +46,14 @@ public class Octree implements IOctreeParentNode {
     @Override
     public void decrementNonEmptySubtreesCount() {
         // Nothing
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void print() {
+        rootNode.print(0);
     }
 
 }
