@@ -143,12 +143,26 @@ public class Game {
 
         testMesh = meshBuilder.build();*/
 
-        octree = new Octree(4, 6);
-        octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
-        octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
-        octree.addVoxel(new Vector3i(1, 1, 0), Material.CRATE.getId());
+        octree = new Octree(4, 3);
+        //octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
+        //octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
+        //octree.addVoxel(new Vector3i(1, 1, 0), Material.CRATE.getId());
 
-        octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
+        //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
+
+        int dings = 20;
+
+        for(int x = 0; x < dings; x++) {
+            for(int y = 0; y < dings; y++) {
+                for (int z = 0; z < dings; z++) {
+                    //if(x == 0 && y == 0 && z == 0)
+                    //    continue;
+                    octree.addVoxel(new Vector3i(x, y, z), Material.CRATE.getId());
+                }
+            }
+        }
+
+        octree.removeVoxel(new Vector3i(0, 0, 0));
 
         textureAtlas = new TextureAtlas();
         textureAtlas.activate();

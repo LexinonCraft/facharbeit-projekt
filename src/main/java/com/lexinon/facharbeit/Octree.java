@@ -18,10 +18,10 @@ public class Octree implements IOctreeParentNode {
     }
 
     public void addVoxel(Vector3i pos, short material) {
-        rootNode = rootNode.addVoxel(pos.mul(1 << 32 - edgeLengthExponent - depth), material, depth, this, this);
+        rootNode = rootNode.addVoxel(pos.mul(1 << (32 - edgeLengthExponent - depth)), material, depth, this, this);
     }
 
-    public void removeVoxel(Vector3i pos, InnerOctreeNode parentNode, Octree octree) {
+    public void removeVoxel(Vector3i pos) {
         rootNode = rootNode.removeVoxel(pos, this, this);
     }
 
@@ -30,7 +30,7 @@ public class Octree implements IOctreeParentNode {
     }
 
     public boolean doOcclusionTest() {
-        return false;
+        return true;
     }
 
     @Override
@@ -42,4 +42,5 @@ public class Octree implements IOctreeParentNode {
     public void decrementNonEmptySubtreesCount() {
         // Nothing
     }
+
 }

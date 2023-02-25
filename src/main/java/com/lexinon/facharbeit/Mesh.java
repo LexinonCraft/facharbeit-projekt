@@ -35,8 +35,6 @@ public class Mesh {
     public void update(FloatBuffer buffer, int vertices) {
         this.vertices = vertices;
 
-        System.out.println("Hello");
-
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     }

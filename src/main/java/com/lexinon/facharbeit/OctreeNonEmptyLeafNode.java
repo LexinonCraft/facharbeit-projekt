@@ -8,14 +8,16 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
     private final short[] content;                // e.g. [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0), (0, 0, 1), (1, 0, 1), (0, 1, 1), (1, 1, 1)]
     private final int edgeLengthExponent;
+    private final int edgeLength;
+    private final int edgeLengthSquared;
     private int nonEmptyVoxels = 0;
 
     private final Mesh mesh = new Mesh();
 
     public OctreeNonEmptyLeafNode(Octree octree) {
-        System.out.println("dings");
         edgeLengthExponent = octree.getEdgeLengthExponent();
-        int edgeLength = 1 << edgeLengthExponent;
+        edgeLength = 1 << edgeLengthExponent;
+        edgeLengthSquared = edgeLength * edgeLength;
         content = new short[edgeLength * edgeLength * edgeLength];
     }
 
@@ -26,9 +28,9 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
     @Override
     public IOctreeNode addVoxel(Vector3i pos, short material, int remainingDepth, IOctreeParentNode parentNode, Octree octree) {
-        Vector3i newPos = new Vector3i(pos.x >> (32 - edgeLengthExponent), pos.y >> (32 - edgeLengthExponent), pos.z >> (32 - edgeLengthExponent));
-        //System.out.println("Fools");
-        System.out.println(newPos);
+        Vector3i newPos = new Vector3i((pos.x >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
+                (pos.y >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
+                (pos.z >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1);
         if(content[getIndexByPos(newPos)] == 0)
             nonEmptyVoxels++;
         content[getIndexByPos(newPos)] = material;
@@ -43,6 +45,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
             nonEmptyVoxels--;
         content[getIndexByPos(newPos)] = 0;
         if(nonEmptyVoxels > 0) {
+            System.out.println("Funktioniert");
             updateMesh(octree.doOcclusionTest());
             return this;
         } else {
@@ -53,10 +56,6 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
     }
 
     private void updateMesh(boolean doOcclusionTest) {
-        int edgeLength = 1 << edgeLengthExponent;
-        System.out.println("dsadd ");
-        System.out.println(content[0] + " " + content[1]);
-        int edgeLengthSquared = edgeLength * edgeLength;
 
         MeshBuilder meshBuilder = new MeshBuilder(6 * edgeLength * edgeLength * edgeLength);
 
@@ -129,9 +128,9 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
     }
 
     private Vector3i getPosByIndex(int i) {
-        int x = i << (32 - edgeLengthExponent) >> (32 - edgeLengthExponent);
-        int y = i << (32 - 2 * edgeLengthExponent) >> (32 - edgeLengthExponent);
-        int z = i << (32 - 3 * edgeLengthExponent) >> (32 - edgeLengthExponent);
+        int x = i & ((1 << edgeLengthExponent) - 1);
+        int y = (i >> edgeLengthExponent) & (((1 << edgeLengthExponent) - 1));
+        int z = (i >> 2 * edgeLengthExponent) & (((1 << edgeLengthExponent) - 1));
         return new Vector3i(x, y, z);
     }
 
