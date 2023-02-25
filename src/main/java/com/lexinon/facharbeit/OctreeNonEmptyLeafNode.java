@@ -1,6 +1,11 @@
 package com.lexinon.facharbeit;
 
+import org.joml.Vector3f;
 import org.joml.Vector3i;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
@@ -18,7 +23,6 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         edgeLength = 1 << edgeLengthExponent;
         edgeLengthSquared = edgeLength * edgeLength;
         content = new short[edgeLength * edgeLength * edgeLength];
-        System.out.println(content.length);
     }
 
     @Override
@@ -34,8 +38,10 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         if(content[getIndexByPos(newPos)] == 0)
             nonEmptyVoxels++;
         content[getIndexByPos(newPos)] = material;
-        if(!enqueuedForUpdatingMesh)
+        if(!enqueuedForUpdatingMesh) {
             octree.enqueueModifiedMesh(this);
+            enqueuedForUpdatingMesh = true;
+        }
         return this;
     }
 
@@ -46,8 +52,10 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
             nonEmptyVoxels--;
         content[getIndexByPos(newPos)] = 0;
         if(nonEmptyVoxels > 0) {
-            if(!enqueuedForUpdatingMesh)
+            if(!enqueuedForUpdatingMesh) {
                 octree.enqueueModifiedMesh(this);
+                enqueuedForUpdatingMesh = true;
+            }
             return this;
         } else {
             parentNode.decrementNonEmptySubtreesCount();

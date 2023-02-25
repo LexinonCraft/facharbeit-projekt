@@ -51,8 +51,7 @@ public class Mesh {
                 .translate(new Vector3f(pos));
 
         FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
-        int matrixLoc = glGetUniformLocation(game.testShader, "ModelViewProjectionMatrix");
-        glUniformMatrix4fv(matrixLoc, false, modelViewProjectionMatrix.get(matrixBuffer));
+        glUniformMatrix4fv(game.voxelShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_TRIANGLES, 0, vertices);
     }
 

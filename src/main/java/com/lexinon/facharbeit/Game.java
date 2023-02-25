@@ -2,11 +2,8 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.lwjgl.BufferUtils;
 
-import java.io.InputStream;
 import java.nio.FloatBuffer;
-import java.util.Scanner;
 
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL20C.*;
@@ -20,10 +17,10 @@ public class Game {
     private TextureAtlas textureAtlas;
 
     private Mesh testMesh;
-    public int testShader;
+    public VoxelShader voxelShader;
+    public BoxShader boxShader;
     Octree octree;
 
-    private int matrixLoc;
     private FloatBuffer cameraMatrix;
 
     private long lastTime;
@@ -51,37 +48,8 @@ public class Game {
         //camera.setYaw(-0.25f * (float) Math.PI);
         camera.updateViewProjectionMatrix();
 
-        InputStream vertexShaderInputStream = Game.class.getResourceAsStream("/myshader.vert");
-        Scanner vertexShaderScanner = new Scanner(vertexShaderInputStream);
-        StringBuilder vertexShaderStringBuilder = new StringBuilder();
-        while(vertexShaderScanner.hasNext()) {
-            vertexShaderStringBuilder.append(vertexShaderScanner.nextLine());
-            vertexShaderStringBuilder.append("\n");
-        }
-        String vertexShaderCode = vertexShaderStringBuilder.toString();
-        int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShaderId, vertexShaderCode);
-        glCompileShader(vertexShaderId);
-
-        InputStream fragmentShaderInputStream = Game.class.getResourceAsStream("/myshader.frag");
-        Scanner fragmentShaderScanner = new Scanner(fragmentShaderInputStream);
-        StringBuilder fragmentShaderStringBuilder = new StringBuilder();
-        while(fragmentShaderScanner.hasNext()) {
-            fragmentShaderStringBuilder.append(fragmentShaderScanner.nextLine());
-            fragmentShaderStringBuilder.append("\n");
-        }
-        String fragmentShaderCode = fragmentShaderStringBuilder.toString();
-        int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShaderId, fragmentShaderCode);
-        glCompileShader(fragmentShaderId);
-
-        int programId = glCreateProgram();
-        testShader = programId;
-        glAttachShader(programId, vertexShaderId);
-        glAttachShader(programId, fragmentShaderId);
-        glLinkProgram(programId);
-
-        glUseProgram(programId);
+        voxelShader = new VoxelShader();
+        boxShader = new BoxShader();
 
         /*int testArray = glGenVertexArrays();
         glBindVertexArray(testArray);
@@ -194,7 +162,7 @@ public class Game {
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
         textureAtlas = new TextureAtlas();
-        textureAtlas.activate();
+        textureAtlas.activate(this);
 
         glEnable(GL_DEPTH_TEST);
 
@@ -240,6 +208,8 @@ public class Game {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         octree.render();
 
+        new BoxMesh().draw(new Vector3i(3, 2, 5), this);
+
         window.update();
 
         window.setTitle(String.format("Facharbeit Projekt, Position = (%d,%d,%d)", (int) eye.x, (int) eye.y, (int) eye.z));
@@ -255,4 +225,5 @@ public class Game {
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
+
 }

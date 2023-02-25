@@ -58,11 +58,11 @@ public class TextureAtlas {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
-    public void activate() {
+    public void activate(Game game) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, handle);
         // TODO
-        glUniform1i(glGetUniformLocation(Game.get().testShader, "TextureAtlas"), 0);
+        glUniform1i(game.voxelShader.getLoc("TextureAtlas"), 0);
     }
 
     public static Vector2f getTexCoords(int x, int y) {
