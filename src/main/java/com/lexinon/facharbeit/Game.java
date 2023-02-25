@@ -1,7 +1,7 @@
 package com.lexinon.facharbeit;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;
 
 import java.io.InputStream;
@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL20C.*;
-import static org.lwjgl.opengl.GL30C.*;
 
 public class Game {
 
@@ -22,6 +21,7 @@ public class Game {
 
     private Mesh testMesh;
     public int testShader;
+    Octree octree;
 
     private int matrixLoc;
     private FloatBuffer cameraMatrix;
@@ -112,36 +112,43 @@ public class Game {
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 28, 12);
         glEnableVertexAttribArray(1);*/
 
-        MeshBuilder meshBuilder = new MeshBuilder(24);
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.UP, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.DOWN, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.NORTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.EAST, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.SOUTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(0f, 0f, 0f), Direction.WEST, new Vector2f(9, 17).div(32));
+        /*MeshBuilder meshBuilder = new MeshBuilder(24);
+        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.UP, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.DOWN, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.NORTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.EAST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.SOUTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.WEST, new Vector2f(9, 17).div(32));
 
-        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.UP, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.DOWN, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.NORTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.EAST, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.SOUTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 0f, 0f), Direction.WEST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.UP, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.DOWN, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.NORTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.EAST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.SOUTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.WEST, new Vector2f(9, 17).div(32));
 
-        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.UP, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.DOWN, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.NORTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.EAST, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.SOUTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3f(1f, 1f, 0f), Direction.WEST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.UP, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.DOWN, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.NORTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.EAST, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.SOUTH, new Vector2f(9, 17).div(32));
+        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.WEST, new Vector2f(9, 17).div(32));
 
-        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.UP, new Vector2f(6, 18).div(32));
-        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.DOWN, new Vector2f(2, 1).div(32));
-        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.NORTH, new Vector2f(2, 0).div(32));
-        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.EAST, new Vector2f(2, 0).div(32));
-        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.SOUTH, new Vector2f(2, 0).div(32));
-        meshBuilder.addFace(new Vector3f(1f, -5f, 3f), Direction.WEST, new Vector2f(2, 0).div(32));
+        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.UP, new Vector2f(6, 18).div(32));
+        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.DOWN, new Vector2f(2, 1).div(32));
+        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.NORTH, new Vector2f(2, 0).div(32));
+        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.EAST, new Vector2f(2, 0).div(32));
+        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.SOUTH, new Vector2f(2, 0).div(32));
+        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.WEST, new Vector2f(2, 0).div(32));
 
-        testMesh = meshBuilder.toMesh();
+        testMesh = meshBuilder.build();*/
+
+        octree = new Octree(4, 6);
+        octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
+        octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
+        //octree.addVoxel(new Vector3i(2, 0, 0), Material.CRATE.getId());
+
+        //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
 
         textureAtlas = new TextureAtlas();
         textureAtlas.activate();
@@ -186,9 +193,11 @@ public class Game {
 
         glClearColor(0.74609375f, 0.9140625f, 0.95703125f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        testMesh.draw();
+        octree.render();
 
         window.update();
+
+        window.setTitle(String.format("Facharbeit Projekt, Position = (%d,%d,%d)", (int) eye.x, (int) eye.y, (int) eye.z));
 
         if(window.shouldClose())
             terminate = true;

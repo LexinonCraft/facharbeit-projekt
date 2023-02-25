@@ -12,15 +12,14 @@ public class Mesh {
     private int vbo;
     private int vertices;
 
-    public Mesh(FloatBuffer buffer, int vertices) {
-        this.vertices = vertices;
+    public Mesh() {
+        vertices = 0;
 
         vao = glGenVertexArrays();
         glBindVertexArray(vao);
 
         vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * 4, 0);
         glEnableVertexAttribArray(0);
@@ -28,9 +27,28 @@ public class Mesh {
         glEnableVertexAttribArray(1);
     }
 
+    public Mesh(FloatBuffer buffer, int vertices) {
+        this();
+        update(buffer, vertices);
+    }
+
+    public void update(FloatBuffer buffer, int vertices) {
+        this.vertices = vertices;
+
+        System.out.println("Hello");
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+    }
+
     public void draw() {
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, vertices);
+    }
+
+    public void delete() {
+        glDeleteBuffers(vbo);
+        glDeleteVertexArrays(vao);
     }
 
 }

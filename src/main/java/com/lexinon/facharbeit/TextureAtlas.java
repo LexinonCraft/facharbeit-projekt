@@ -1,5 +1,7 @@
 package com.lexinon.facharbeit;
 
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
@@ -60,6 +62,10 @@ public class TextureAtlas {
         glBindTexture(GL_TEXTURE_2D, handle);
         // TODO
         glUniform1i(glGetUniformLocation(Game.get().testShader, "TextureAtlas"), 0);
+    }
+
+    public static Vector2f getTexCoords(int x, int y) {
+        return new Vector2f(x, y).div(32);
     }
 
 }

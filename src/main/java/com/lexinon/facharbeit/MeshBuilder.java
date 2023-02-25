@@ -2,6 +2,7 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -15,7 +16,11 @@ public class MeshBuilder {
         buffer = BufferUtils.createFloatBuffer(maxAmountOfFaces * Mesh.MAX_AMOUNT_OF_FLOATS_PER_FACE);
     }
 
-    public void addFace(Vector3f voxelPos, Direction direction, Vector2f texCoords) {
+    public void addFace(Vector3i voxelPos, Direction direction, short material) {
+        addFace(voxelPos, direction, Material.getTexCoords(material, direction));
+    }
+
+    public void addFace(Vector3i voxelPos, Direction direction, Vector2f texCoords) {
         Vector3f vertexPos1 = new Vector3f(voxelPos).add(direction.vertex1);
         Vector3f vertexPos2 = new Vector3f(voxelPos).add(direction.vertex2);
         Vector3f vertexPos3 = new Vector3f(voxelPos).add(direction.vertex3);
@@ -65,8 +70,12 @@ public class MeshBuilder {
         vertices += 6;
     }
 
-    public Mesh toMesh() {
+    public Mesh build() {
         return new Mesh(buffer.flip(), vertices);
+    }
+
+    public void build(Mesh mesh) {
+        mesh.update(buffer.flip(), vertices);
     }
 
 }
