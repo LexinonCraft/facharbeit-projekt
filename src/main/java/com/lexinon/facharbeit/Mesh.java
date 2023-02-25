@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL30C.*;
 public class Mesh {
 
     public static final int MAX_AMOUNT_OF_FLOATS_PER_FACE = 5 * 3 * 2;
+    private static final FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 
     private int vao;
     private int vbo;
@@ -44,15 +45,16 @@ public class Mesh {
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     }
 
-    public void draw(Vector3i pos, Game game) {
+    public void draw(int originX, int originY, int originZ, Game game) {
         glBindVertexArray(vao);
 
-        Matrix4f modelViewProjectionMatrix = new Matrix4f(game.camera.getViewProjectionMatrix())
-                .translate(new Vector3f(pos));
+        Matrix4f modelViewProjectionMatrix = game.camera.getViewProjectionMatrix()
+                .translate(originX, originY, originZ);
 
-        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
         glUniformMatrix4fv(game.voxelShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_TRIANGLES, 0, vertices);
+
+        modelViewProjectionMatrix.translate(-originX, -originY, -originZ);
     }
 
     public void delete() {

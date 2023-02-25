@@ -1,12 +1,11 @@
 package com.lexinon.facharbeit;
 
-import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class OctreeEmptyLeafNode implements IOctreeNode {
 
     @Override
-    public void render(Vector3i origin, int volumeEdgeLength, Octree octree) {
+    public void render(int originX, int originY, int originZ, int volumeEdgeLength, Octree octree) {
         // Nothing...
     }
 

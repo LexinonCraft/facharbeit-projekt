@@ -21,7 +21,7 @@ public class Octree implements IOctreeParentNode {
 
     public void render() {
         game.voxelShader.use();
-        rootNode.render(new Vector3i(-(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1))), 1 << (depth + edgeLengthExponent), this);
+        rootNode.render(-(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), 1 << (depth + edgeLengthExponent), this);
     }
 
     public void addVoxel(Vector3i pos, short material) {

@@ -20,17 +20,17 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
     private int nonEmptySubtrees = 0;
 
     @Override
-    public void render(Vector3i origin, int volumeEdgeLength, Octree octree) {
+    public void render(int originX, int originY, int originZ, int volumeEdgeLength, Octree octree) {
         //System.out.println(origin);
         int half = volumeEdgeLength / 2;
-        subtree1.render(new Vector3i(origin).add(0, 0, 0), half, octree);
-        subtree2.render(new Vector3i(origin).add(0, 0, half), half, octree);
-        subtree3.render(new Vector3i(origin).add(0, half, 0), half, octree);
-        subtree4.render(new Vector3i(origin).add(0, half, half), half, octree);
-        subtree5.render(new Vector3i(origin).add(half, 0, 0), half, octree);
-        subtree6.render(new Vector3i(origin).add(half, 0, half), half, octree);
-        subtree7.render(new Vector3i(origin).add(half, half, 0), half, octree);
-        subtree8.render(new Vector3i(origin).add(half, half, half), half, octree);
+        subtree1.render(originX, originY, originZ, half, octree);
+        subtree2.render(originX, originY, originZ + half, half, octree);
+        subtree3.render(originX, originY + half, originZ, half, octree);
+        subtree4.render(originX, originY + half, originZ + half, half, octree);
+        subtree5.render(originX + half, originY, originZ, half, octree);
+        subtree6.render(originX + half, originY, originZ + half, half, octree);
+        subtree7.render(originX + half, originY + half, originZ, half, octree);
+        subtree8.render(originX + half, originY + half, originZ + half, half, octree);
     }
 
     @Override
