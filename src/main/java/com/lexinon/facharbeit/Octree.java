@@ -18,7 +18,7 @@ public class Octree implements IOctreeParentNode {
     }
 
     public void addVoxel(Vector3i pos, short material) {
-        rootNode = rootNode.addVoxel(pos.mul(1 << 32 - edgeLengthExponent), material, depth, this, this);
+        rootNode = rootNode.addVoxel(pos.mul(1 << 32 - edgeLengthExponent - depth), material, depth, this, this);
     }
 
     public void removeVoxel(Vector3i pos, InnerOctreeNode parentNode, Octree octree) {
