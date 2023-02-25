@@ -146,9 +146,9 @@ public class Game {
         octree = new Octree(4, 6);
         octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
         octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
-        //octree.addVoxel(new Vector3i(2, 0, 0), Material.CRATE.getId());
+        octree.addVoxel(new Vector3i(1, 1, 0), Material.CRATE.getId());
 
-        //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
+        octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
 
         textureAtlas = new TextureAtlas();
         textureAtlas.activate();

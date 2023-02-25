@@ -9,7 +9,7 @@ public class Material {
 
     public static final Material
             CRATE = material("Crate", new Vector2f(9, 17), new Vector2f(9, 17), new Vector2f(9, 17)),
-            GRASS = material("Grass", new Vector2f(9, 18), new Vector2f(2, 0), new Vector2f(2, 1));
+            GRASS = material("Grass", new Vector2f(6, 18), new Vector2f(2, 0), new Vector2f(2, 1));
 
     private String name;
     private Vector2f texCoordsUp, texCoordsSide, texCoordsDown;
