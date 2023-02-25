@@ -31,7 +31,7 @@ public class MeshBuilder {
 
         Vector2f vertexTexCoords1 = new Vector2f(TEXTURE_MARGIN, SIDE_LENGTH_OF_ONE_TEXTURE - TEXTURE_MARGIN).add(texCoords);
         Vector2f vertexTexCoords2 = new Vector2f(SIDE_LENGTH_OF_ONE_TEXTURE - TEXTURE_MARGIN, SIDE_LENGTH_OF_ONE_TEXTURE - TEXTURE_MARGIN).add(texCoords);
-        Vector2f vertexTexCoords3 = new Vector2f(SIDE_LENGTH_OF_ONE_TEXTURE, TEXTURE_MARGIN).add(texCoords);
+        Vector2f vertexTexCoords3 = new Vector2f(SIDE_LENGTH_OF_ONE_TEXTURE - TEXTURE_MARGIN, TEXTURE_MARGIN).add(texCoords);
         Vector2f vertexTexCoords4 = new Vector2f(TEXTURE_MARGIN, TEXTURE_MARGIN).add(texCoords);
 
         buffer.put(vertexPos1.x);

@@ -23,8 +23,6 @@ public class Game {
     public int testShader;
     Octree octree;
 
-    public static int voxelCounter = 0;
-
     private int matrixLoc;
     private FloatBuffer cameraMatrix;
 
@@ -146,7 +144,7 @@ public class Game {
 
         testMesh = meshBuilder.build();*/
 
-        octree = new Octree(4, 4, this);
+        octree = new Octree(6, 4, this);
         //octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
         //octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
         //octree.addVoxel(new Vector3i(1, 1, 0), Material.CRATE.getId());
@@ -154,7 +152,17 @@ public class Game {
         //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
 
         for(int x = -50; x < 50; x++) {
-            for(int y = 0; y < 3; y++) {
+            for(int y = 0; y < 2; y++) {
+                for (int z = -50; z < 50; z++) {
+                    //if(x == 0 && y == 0 && z == 0)
+                    //    continue;
+                    octree.addVoxel(new Vector3i(x, y, z), Material.TEST_STONE.getId());
+                }
+            }
+        }
+
+        for(int x = -50; x < 50; x++) {
+            for(int y = 2; y < 3; y++) {
                 for (int z = -50; z < 50; z++) {
                     //if(x == 0 && y == 0 && z == 0)
                     //    continue;
@@ -162,6 +170,16 @@ public class Game {
                 }
             }
         }
+
+        octree.addVoxel(new Vector3i(25, 3, 17), Material.LOG.getId());
+        octree.addVoxel(new Vector3i(25, 4, 17), Material.LOG.getId());
+        octree.addVoxel(new Vector3i(25, 5, 17), Material.LOG.getId());
+        octree.addVoxel(new Vector3i(25, 6, 17), Material.LOG.getId());
+        octree.addVoxel(new Vector3i(24, 6, 17), Material.LEAVES.getId());
+        octree.addVoxel(new Vector3i(26, 6, 17), Material.LEAVES.getId());
+        octree.addVoxel(new Vector3i(25, 6, 16), Material.LEAVES.getId());
+        octree.addVoxel(new Vector3i(25, 6, 18), Material.LEAVES.getId());
+        octree.addVoxel(new Vector3i(25, 7, 17), Material.LEAVES.getId());
 
         /*for(int x = 0; x < 20; x++) {
             for(int y = 0; y < 20; y++) {
@@ -173,9 +191,6 @@ public class Game {
             }
         }*/
 
-        octree.print();
-        System.out.println("Voxel count: " + voxelCounter);
-
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
         textureAtlas = new TextureAtlas();
@@ -184,6 +199,8 @@ public class Game {
         glEnable(GL_DEPTH_TEST);
 
         glEnable(GL_POLYGON_SMOOTH);
+
+        glEnable(GL_MULTISAMPLE);
 
         glEnable(GL_CULL_FACE);
 
@@ -216,6 +233,8 @@ public class Game {
         camera.setAspectRatio((float) window.getFramebufferWidth() / window.getFramebufferHeight());
 
         camera.updateViewProjectionMatrix();
+
+        octree.updateMeshs();
 
         glClearColor(0.74609375f, 0.9140625f, 0.95703125f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

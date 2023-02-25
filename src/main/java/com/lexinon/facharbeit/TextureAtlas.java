@@ -1,7 +1,6 @@
 package com.lexinon.facharbeit;
 
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
@@ -16,8 +15,8 @@ import static org.lwjgl.opengl.GL30C.*;
 
 public class TextureAtlas {
 
-    public static final float SIDE_LENGTH_OF_ONE_TEXTURE = 0.03125f;
-    public static final float TEXTURE_MARGIN = 1 / 128f * SIDE_LENGTH_OF_ONE_TEXTURE;
+    public static final float SIDE_LENGTH_OF_ONE_TEXTURE = 1f / 32;
+    public static final float TEXTURE_MARGIN = 1f / 9 * SIDE_LENGTH_OF_ONE_TEXTURE;
 
     private final int handle;
 
@@ -54,6 +53,7 @@ public class TextureAtlas {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
         glGenerateMipmap(GL_TEXTURE_2D);
     }

@@ -2,12 +2,16 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector3i;
 
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class Octree implements IOctreeParentNode {
 
     private IOctreeNode rootNode = new OctreeEmptyLeafNode();
     private final int depth;
     private final int edgeLengthExponent;
     private final Game game;
+    private Queue<OctreeNonEmptyLeafNode> updateMeshQueue = new LinkedBlockingQueue<>();
 
     public Octree(int depth, int edgeLengthExponent, Game game) {
         this.depth = depth;
@@ -54,6 +58,15 @@ public class Octree implements IOctreeParentNode {
 
     public void print() {
         rootNode.print(0);
+    }
+
+    public void enqueueModifiedMesh(OctreeNonEmptyLeafNode node) {
+        updateMeshQueue.add(node);
+    }
+
+    public void updateMeshs() {
+        updateMeshQueue.forEach(node -> node.updateMesh(doOcclusionTest()));
+        updateMeshQueue.clear();
     }
 
 }

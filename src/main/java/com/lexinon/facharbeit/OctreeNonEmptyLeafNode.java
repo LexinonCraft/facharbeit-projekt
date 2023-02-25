@@ -9,6 +9,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
     private final int edgeLength;
     private final int edgeLengthSquared;
     private int nonEmptyVoxels = 0;
+    private boolean enqueuedForUpdatingMesh = false;
 
     private final Mesh mesh = new Mesh();
 
@@ -33,8 +34,8 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         if(content[getIndexByPos(newPos)] == 0)
             nonEmptyVoxels++;
         content[getIndexByPos(newPos)] = material;
-        updateMesh(octree.doOcclusionTest());
-        Game.voxelCounter++;
+        if(!enqueuedForUpdatingMesh)
+            octree.enqueueModifiedMesh(this);
         return this;
     }
 
@@ -45,7 +46,8 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
             nonEmptyVoxels--;
         content[getIndexByPos(newPos)] = 0;
         if(nonEmptyVoxels > 0) {
-            updateMesh(octree.doOcclusionTest());
+            if(!enqueuedForUpdatingMesh)
+                octree.enqueueModifiedMesh(this);
             return this;
         } else {
             parentNode.decrementNonEmptySubtreesCount();
@@ -54,8 +56,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         }
     }
 
-    private void updateMesh(boolean doOcclusionTest) {
-
+    public void updateMesh(boolean doOcclusionTest) {
         MeshBuilder meshBuilder = new MeshBuilder(6 * edgeLength * edgeLength * edgeLength);
 
         if(doOcclusionTest) {
@@ -70,6 +71,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         }
 
         meshBuilder.build(mesh);
+        enqueuedForUpdatingMesh = false;
     }
 
     private void constructVoxelFacesWithOcclusionTest(int i, MeshBuilder meshBuilder) {
