@@ -75,6 +75,9 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
     }
 
     private void constructVoxelFacesWithOcclusionTest(int i, MeshBuilder meshBuilder, int edgeLength, int edgeLengthSquared) {
+        if(content[i] == 0)
+            return;
+
         int topNeighborIndex = i + edgeLength;
         int bottomNeighborIndex = i - edgeLength;
         int northNeighborIndex = i + edgeLengthSquared;
