@@ -32,7 +32,10 @@ public class Octree implements IOctreeParentNode {
     }
 
     public void removeVoxel(Vector3i pos) {
-        rootNode = rootNode.removeVoxel(pos, this, this);
+        int x = (pos.x * (1 << (32 - edgeLengthExponent - depth))) ^ 0x80000000;
+        int y = (pos.y * (1 << (32 - edgeLengthExponent - depth))) ^ 0x80000000;
+        int z = (pos.z * (1 << (32 - edgeLengthExponent - depth))) ^ 0x80000000;
+        rootNode = rootNode.removeVoxel(new Vector3i(x, y, z), this, this);
     }
 
     public int getEdgeLengthExponent() {

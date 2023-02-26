@@ -17,7 +17,7 @@ public class Camera {
         eye = new Vector3f();
         yaw = 0f;
         pitch = 0f;
-        fov = (float) Math.toRadians(90);
+        fov = 90;
         aspectRatio = 1;
         zNear = 0.05f;
         zFar = 100f;
@@ -26,9 +26,9 @@ public class Camera {
 
     public Matrix4f updateViewProjectionMatrix() {
         return viewProjectionMatrix = new Matrix4f()
-            .perspective(fov, aspectRatio, zNear, zFar)
-                .lookAt(eye, new Vector3f((float) (Math.sin(yaw) * Math.cos(pitch)), (float) Math.sin(pitch), -(float) (Math.cos(yaw) * Math.cos(pitch))).add(eye),
-                        new Vector3f((float) (Math.sin(yaw) * Math.sin(-pitch)), (float) Math.cos(pitch), -(float) (Math.cos(yaw) * Math.sin(-pitch))));
+            .perspective((float) Math.toRadians(fov), aspectRatio, zNear, zFar)
+                .lookAt(eye, new Vector3f((float) (Math.sin(yaw) * Math.cos(pitch)), (float) Math.sin(pitch), -(float) (Math.cos(yaw) * Math.cos(pitch))).normalize().add(eye),
+                        new Vector3f((float) (Math.sin(yaw) * Math.sin(-pitch)), (float) Math.cos(pitch), -(float) (Math.cos(yaw) * Math.sin(-pitch))).normalize());
     }
 
     public Matrix4f getViewProjectionMatrix() {
@@ -66,4 +66,13 @@ public class Camera {
     public void setAspectRatio(float aspectRatio) {
         this.aspectRatio = aspectRatio;
     }
+
+    public float getFov() {
+        return fov;
+    }
+
+    public void setFov(float fov) {
+        this.fov = fov;
+    }
+
 }

@@ -42,7 +42,10 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
     @Override
     public IOctreeNode removeVoxel(Vector3i pos, IOctreeParentNode parentNode, Octree octree) {
-        Vector3i newPos = new Vector3i(pos.x >> (32 - edgeLengthExponent), pos.y >> (32 - edgeLengthExponent), pos.z >> (32 - edgeLengthExponent));
+        System.out.println("Nashornkäfer");
+        Vector3i newPos = new Vector3i((pos.x >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
+                (pos.y >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
+                (pos.z >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1);
         if(content[getIndexByPos(newPos)] != 0)
             nonEmptyVoxels--;
         content[getIndexByPos(newPos)] = 0;

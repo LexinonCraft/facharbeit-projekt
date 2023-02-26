@@ -16,14 +16,17 @@ public class Game {
     public Camera camera;
     private TextureAtlas textureAtlas;
 
-    private Mesh testMesh;
     public VoxelShader voxelShader;
     public BoxShader boxShader;
-    Octree octree;
+    private Octree octree;
+    private BoxMesh boxMesh;
 
-    private FloatBuffer cameraMatrix;
+    private float movementSpeed = 1f;
+    private float selectionDistance = 5f;
 
     private long lastTime;
+    private int destroyCooldown = 0;
+    private int placeCooldown = 0;
     private boolean terminate = false;
 
     public static Game get() {
@@ -164,6 +167,8 @@ public class Game {
         textureAtlas = new TextureAtlas();
         textureAtlas.activate(this);
 
+        boxMesh = new BoxMesh();
+
         glEnable(GL_DEPTH_TEST);
 
         glEnable(GL_POLYGON_SMOOTH);
@@ -191,12 +196,60 @@ public class Game {
         camera.setYaw(yaw);
         camera.setPitch(pitch);
 
-        Vector3f eye = camera.getEye();
-        eye = eye.add(new Vector3f((window.isKeyWPressed() ? (float) Math.sin(yaw) : 0) - (window.isKeySPressed() ? (float) Math.sin(yaw) : 0) + (window.isKeyDPressed() ? (float) Math.cos(yaw) : 0) - (window.isKeyAPressed() ? (float) Math.cos(yaw) : 0),
+        camera.getEye().add(new Vector3f((window.isKeyWPressed() ? movementSpeed * (float) Math.sin(yaw) : 0)
+                    - (window.isKeySPressed() ? movementSpeed * (float) Math.sin(yaw) : 0)
+                    + (window.isKeyDPressed() ? movementSpeed * (float) Math.cos(yaw) : 0)
+                    - (window.isKeyAPressed() ? movementSpeed * (float) Math.cos(yaw) : 0),
                 (window.isSpacebarPressed() ? 1 : 0) - (window.isShiftPressed() ? 1 : 0),
-                (window.isKeySPressed() ? (float) Math.cos(-yaw) : 0) - (window.isKeyWPressed() ? (float) Math.cos(-yaw) : 0) + (window.isKeyAPressed() ? (float) Math.sin(-yaw) : 0) - (window.isKeyDPressed() ? (float) Math.sin(-yaw) : 0)
+                (window.isKeySPressed() ? movementSpeed * (float) Math.cos(-yaw) : 0)
+                        - (window.isKeyWPressed() ? movementSpeed * (float) Math.cos(-yaw) : 0)
+                        + (window.isKeyAPressed() ? movementSpeed * (float) Math.sin(-yaw) : 0)
+                        - (window.isKeyDPressed() ? movementSpeed * (float) Math.sin(-yaw) : 0)
                 ).mul(delta / 1_000_000_000f * 5));
-        camera.setEye(eye);
+
+        Vector3f lookingAt = new Vector3f(camera.getEye()).add(new Vector3f((float) (Math.sin(yaw) * Math.cos(pitch)), (float) Math.sin(pitch), -(float) (Math.cos(yaw) * Math.cos(pitch))).normalize().mul(selectionDistance));
+        Vector3i selectedVoxel = new Vector3i((int) lookingAt.x, (int) lookingAt.y, (int) lookingAt.z);
+
+        if(destroyCooldown > delta)
+            destroyCooldown -= delta;
+        else
+            destroyCooldown = 0;
+        if(placeCooldown > delta)
+            placeCooldown -= delta;
+        else
+            placeCooldown = 0;
+
+        if(destroyCooldown == 0 && window.isLeftMouseButtonPressed()) {
+            octree.removeVoxel(selectedVoxel);
+            destroyCooldown = 300_000_000;
+        }
+        if(placeCooldown == 0 && window.isRightMouseButtonPressed()) {
+            octree.addVoxel(selectedVoxel, Material.CRATE.getId());
+            placeCooldown = 300_000_000;
+        }
+
+        double scroll = window.getScroll();
+        if(window.isCtrlPressed()) {
+            if(window.isAltPressed()) {
+                if(scroll != 0)
+                    System.exit(-1); // ( ͡° ͜ʖ ͡°)
+            } else {
+                movementSpeed += (float) scroll * 0.25;
+                movementSpeed = Math.min(movementSpeed, 5);
+                movementSpeed = Math.max(movementSpeed, 0);
+            }
+        } else {
+            if(window.isAltPressed()) {
+                float fov = camera.getFov() - (float) scroll * 5;
+                fov = Math.min(fov, 179);
+                fov = Math.max(fov, 1);
+                camera.setFov(fov);
+            } else {
+                selectionDistance += (float) scroll * 0.5;
+                selectionDistance = Math.min(selectionDistance, 15);
+                selectionDistance = Math.max(selectionDistance, 0);
+            }
+        }
 
         camera.setAspectRatio((float) window.getFramebufferWidth() / window.getFramebufferHeight());
 
@@ -208,14 +261,16 @@ public class Game {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         octree.render();
 
-        new BoxMesh().draw(new Vector3i(3, 2, 5), this);
+        boxMesh.draw(selectedVoxel, this);
 
         window.update();
 
-        window.setTitle(String.format("Facharbeit Projekt, Position = (%d,%d,%d)", (int) eye.x, (int) eye.y, (int) eye.z));
+        window.setTitle(String.format("Facharbeit Projekt, Position = (%d,%d,%d)", (int) camera.getEye().x, (int) camera.getEye().y, (int) camera.getEye().z));
 
         if(window.shouldClose())
             terminate = true;
+
+        System.gc();
     }
 
     public Camera getCamera() {

@@ -30,6 +30,7 @@ public class Window {
     private double lastMouseXMovement = 0, lastMouseYMovement = 0;
     private double currentMouseXPos = 0, currentMouseYPos = 0;
     private double currentMouseXMovement = 0, currentMouseYMovement = 0;
+    private double lastScroll = 0, currentScroll = 0;
 
     private boolean keyWPressed = false;
     private boolean keyAPressed = false;
@@ -37,6 +38,10 @@ public class Window {
     private boolean keyDPressed = false;
     private boolean spacebarPressed = false;
     private boolean shiftPressed = false;
+    private boolean ctrlPressed = false;
+    private boolean altPressed = false;
+    private boolean leftMouseButtonPressed = false;
+    private boolean rightMouseButtonPressed = false;
 
     public Window(int windowedWidth, int windowedHeight, String title) {
         this.windowedWidth = windowedWidth;
@@ -74,6 +79,7 @@ public class Window {
         glfwSetKeyCallback(handle, this::keyCallback);
         glfwSetMouseButtonCallback(handle, this::mouseButtonCallback);
         glfwSetCursorPosCallback(handle, this::cursorPosCallback);
+        glfwSetScrollCallback(handle, this::scrollCallback);
 
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -106,6 +112,9 @@ public class Window {
         lastMouseYMovement = currentMouseYMovement;
         currentMouseXMovement = 0;
         currentMouseYMovement = 0;
+
+        lastScroll = currentScroll;
+        currentScroll = 0;
 
         eventQueue.forEach(Runnable::run);
         eventQueue.clear();
@@ -238,6 +247,26 @@ public class Window {
         return shiftPressed;
     }
 
+    public boolean isCtrlPressed() {
+        return ctrlPressed;
+    }
+
+    public boolean isAltPressed() {
+        return altPressed;
+    }
+
+    public boolean isLeftMouseButtonPressed() {
+        return leftMouseButtonPressed;
+    }
+
+    public boolean isRightMouseButtonPressed() {
+        return rightMouseButtonPressed;
+    }
+
+    public double getScroll() {
+        return lastScroll;
+    }
+
     private void framebufferSizeCallback(long handle, int width, int height) {
         framebufferWidth = width;
         framebufferHeight = height;
@@ -294,6 +323,18 @@ public class Window {
                     if (action == GLFW_RELEASE)
                         shiftPressed = false;
                 }
+                case GLFW_KEY_LEFT_CONTROL -> {
+                    if (action == GLFW_PRESS)
+                        ctrlPressed = true;
+                    if (action == GLFW_RELEASE)
+                        ctrlPressed = false;
+                }
+                case GLFW_KEY_LEFT_ALT -> {
+                    if (action == GLFW_PRESS)
+                        altPressed = true;
+                    if (action == GLFW_RELEASE)
+                        altPressed = false;
+                }
             }
         });
     }
@@ -303,6 +344,12 @@ public class Window {
             if(button == GLFW_MOUSE_BUTTON_1 && !trackMouse) {
                 trackMouse = true;
                 glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                return;
+            }
+
+            switch(button) {
+                case GLFW_MOUSE_BUTTON_1 -> leftMouseButtonPressed = action != GLFW_RELEASE;
+                case GLFW_MOUSE_BUTTON_2 -> rightMouseButtonPressed = action != GLFW_RELEASE;
             }
         });
     }
@@ -314,6 +361,10 @@ public class Window {
         }
         currentMouseXPos = xPos;
         currentMouseYPos = yPos;
+    }
+
+    private void scrollCallback(long handle, double xOffset, double yOffset) {
+        currentScroll += yOffset;
     }
 
 }
