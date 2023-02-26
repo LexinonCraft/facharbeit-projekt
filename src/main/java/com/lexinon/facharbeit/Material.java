@@ -10,6 +10,7 @@ public class Material {
     public static final Material
             CRATE = material("Crate", new Vector2f(9, 17), new Vector2f(9, 17), new Vector2f(9, 17)),
             GRASS = material("Grass", new Vector2f(6, 18), new Vector2f(2, 0), new Vector2f(2, 1)),
+            DIRT = material("Dirt", new Vector2f(2, 1), new Vector2f(2, 1), new Vector2f(2, 1)),
             TEST_STONE = material("Stone", new Vector2f(2, 4), new Vector2f(2, 4), new Vector2f(2, 4)),
             LOG = material("Log", new Vector2f(14, 16), new Vector2f(13, 16), new Vector2f(14, 16)),
             LEAVES = material("Leaves", new Vector2f(2, 18), new Vector2f(2, 18), new Vector2f(2, 18));

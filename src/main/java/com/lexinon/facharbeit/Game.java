@@ -23,6 +23,7 @@ public class Game {
     public BoxShader boxShader;
     public ScreenShader screenShader;
     private Octree octree;
+    private PerlinNoiseGenerator noiseGenerator;
     private BoxMesh boxMesh;
     private Overlay overlay;
 
@@ -133,7 +134,7 @@ public class Game {
 
         //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
 
-        for(int x = -64; x < 64; x++) {
+        /*for(int x = -64; x < 64; x++) {
             for(int y = 0; y < 2; y++) {
                 for (int z = -64; z < 64; z++) {
                     //if(x == 0 && y == 0 && z == 0)
@@ -151,17 +152,17 @@ public class Game {
                     octree.addVoxel(new Vector3i(x, y, z), Material.GRASS.getId());
                 }
             }
-        }
+        }*/
 
-        octree.addVoxel(new Vector3i(25, 3, 17), Material.LOG.getId());
-        octree.addVoxel(new Vector3i(25, 4, 17), Material.LOG.getId());
-        octree.addVoxel(new Vector3i(25, 5, 17), Material.LOG.getId());
-        octree.addVoxel(new Vector3i(25, 6, 17), Material.LOG.getId());
-        octree.addVoxel(new Vector3i(24, 6, 17), Material.LEAVES.getId());
-        octree.addVoxel(new Vector3i(26, 6, 17), Material.LEAVES.getId());
-        octree.addVoxel(new Vector3i(25, 6, 16), Material.LEAVES.getId());
-        octree.addVoxel(new Vector3i(25, 6, 18), Material.LEAVES.getId());
-        octree.addVoxel(new Vector3i(25, 7, 17), Material.LEAVES.getId());
+        //octree.addVoxel(new Vector3i(25, 3, 17), Material.LOG.getId());
+        //octree.addVoxel(new Vector3i(25, 4, 17), Material.LOG.getId());
+        //octree.addVoxel(new Vector3i(25, 5, 17), Material.LOG.getId());
+        //octree.addVoxel(new Vector3i(25, 6, 17), Material.LOG.getId());
+        //octree.addVoxel(new Vector3i(24, 6, 17), Material.LEAVES.getId());
+        //octree.addVoxel(new Vector3i(26, 6, 17), Material.LEAVES.getId());
+        //octree.addVoxel(new Vector3i(25, 6, 16), Material.LEAVES.getId());
+        //octree.addVoxel(new Vector3i(25, 6, 18), Material.LEAVES.getId());
+        //octree.addVoxel(new Vector3i(25, 7, 17), Material.LEAVES.getId());
 
         /*for(int x = 0; x < 20; x++) {
             for(int y = 0; y < 20; y++) {
@@ -174,6 +175,24 @@ public class Game {
         }*/
 
         //octree.removeVoxel(new Vector3i(0, 0, 0));
+
+        noiseGenerator = new PerlinNoiseGenerator(0, 512);
+        noiseGenerator.noise(8f, 1f)
+                .noise(32f, 1f)
+                .noise(14f, 2f);
+
+        noiseGenerator.normalizeTexture();
+        float[] heightMap = noiseGenerator.getTexture();
+        for(int i = 0; i < heightMap.length; i++) {
+            int terrainHeight = (int) (heightMap[i] * 100);
+            int x = noiseGenerator.getXPosByIndex(i, 512);
+            int z = noiseGenerator.getYPosByIndex(i, 512);
+            octree.addVoxel(new Vector3i(x, terrainHeight, z), Material.GRASS.getId());
+            for(int y = terrainHeight - 1; y >= -100 && y >= terrainHeight - 3; y--)
+                octree.addVoxel(new Vector3i(x, y, z), Material.DIRT.getId());
+            for(int y = terrainHeight - 3; y >= -100; y--)
+                octree.addVoxel(new Vector3i(x, y, z), Material.TEST_STONE.getId());
+        }
 
         voxelTextureAtlas = new VoxelTextureAtlas(game);
         screenTextureAtlas = new ScreenTextureAtlas(game);

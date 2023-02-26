@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.function.Consumer;
 
 public class PerlinNoiseGenerator {
 
@@ -81,6 +82,13 @@ public class PerlinNoiseGenerator {
         return x + y * length;
     }
 
+    public int getXPosByIndex(int i, int length) {
+        return i % length;
+    }
+    public int getYPosByIndex(int i, int length) {
+        return i / length;
+    }
+
     private static int ceilDiv(float a, float b) {
         return (int) Math.floor(a / b) + 1;
     }
@@ -95,4 +103,5 @@ public class PerlinNoiseGenerator {
     public float[] getTexture() {
         return texture;
     }
+
 }
