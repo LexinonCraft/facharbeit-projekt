@@ -13,7 +13,8 @@ public class Material {
             DIRT = material("Dirt", new Vector2f(2, 1), new Vector2f(2, 1), new Vector2f(2, 1)),
             TEST_STONE = material("Stone", new Vector2f(2, 4), new Vector2f(2, 4), new Vector2f(2, 4)),
             LOG = material("Log", new Vector2f(14, 16), new Vector2f(13, 16), new Vector2f(14, 16)),
-            LEAVES = material("Leaves", new Vector2f(2, 18), new Vector2f(2, 18), new Vector2f(2, 18));
+            LEAVES = material("Leaves", new Vector2f(2, 18), new Vector2f(2, 18), new Vector2f(2, 18)),
+            WATER = material("Water", new Vector2f(2, 12), new Vector2f(2, 12), new Vector2f(2, 12));
 
     private String name;
     private Vector2f texCoordsUp, texCoordsSide, texCoordsDown;

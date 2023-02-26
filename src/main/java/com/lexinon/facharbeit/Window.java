@@ -95,6 +95,10 @@ public class Window {
         // ...
     }
 
+    public void destroy() {
+        glfwDestroyWindow(handle);
+    }
+
     public void show() {
         glfwShowWindow(handle);
     }

@@ -52,6 +52,7 @@ public class Game {
         while(!game.terminate) {
             game.tick();
         }
+        game.window.destroy();
     }
 
     private void init() {
@@ -177,7 +178,7 @@ public class Game {
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
         noiseGenerator = new PerlinNoiseGenerator(0, 512);
-        noiseGenerator.noise(8f, 1f)
+        noiseGenerator.noise(8f, 3f)
                 .noise(32f, 1f)
                 .noise(14f, 2f);
 
@@ -187,6 +188,10 @@ public class Game {
             int terrainHeight = (int) (heightMap[i] * 100);
             int x = noiseGenerator.getXPosByIndex(i, 512);
             int z = noiseGenerator.getYPosByIndex(i, 512);
+            if(terrainHeight < 0)
+                for (int y = 0; y > terrainHeight; y--) {
+                    octree.addVoxel(new Vector3i(x, y, z), Material.WATER.getId());
+                }
             octree.addVoxel(new Vector3i(x, terrainHeight, z), Material.GRASS.getId());
             for(int y = terrainHeight - 1; y >= -100 && y >= terrainHeight - 3; y--)
                 octree.addVoxel(new Vector3i(x, y, z), Material.DIRT.getId());

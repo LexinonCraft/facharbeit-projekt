@@ -12,6 +12,7 @@ public class PerlinNoiseGenerator {
     private final int textureSideLength;
     private float totalWeight;
     private final int seed;
+    private int subSeed = 0;
     private final MessageDigest md;
 
     public PerlinNoiseGenerator(int seed, int textureSideLength) {
@@ -62,6 +63,7 @@ public class PerlinNoiseGenerator {
             }
         }
         totalWeight += weight;
+        subSeed++;
         return this;
     }
 
@@ -71,7 +73,7 @@ public class PerlinNoiseGenerator {
     }
 
     private int hash(int x) {
-        return hashBackbone(x + hashBackbone(seed));
+        return hashBackbone(x + hashBackbone(seed + hashBackbone(subSeed)));
     }
 
     private float interpolationFunction(float a) {
