@@ -1,11 +1,7 @@
 package com.lexinon.facharbeit;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL20C.*;
@@ -36,7 +32,7 @@ public class Game {
     private long lastTime;
     private int destroyCooldown = 0;
     private int placeCooldown = 0;
-    private boolean terminate = false;
+    private boolean shouldTerminate = false;
 
     public static int testCounter = 0;
 
@@ -49,10 +45,10 @@ public class Game {
             throw new IllegalStateException("Game already runs!");
         game = new Game();
         game.init();
-        while(!game.terminate) {
+        while(!game.shouldTerminate) {
             game.tick();
         }
-        game.window.destroy();
+        game.terminate();
     }
 
     private void init() {
@@ -331,7 +327,14 @@ public class Game {
         window.setTitle(String.format("Facharbeit Projekt, Position = (%d,%d,%d)", (int) camera.getEye().x, (int) camera.getEye().y, (int) camera.getEye().z));
 
         if(window.shouldClose())
-            terminate = true;
+            shouldTerminate = true;
+    }
+
+    public void terminate() {
+        octree.deleteEverything();
+        boxMesh.delete();
+        overlay.deleteMesh();
+        window.destroy();
     }
 
     public Camera getCamera() {

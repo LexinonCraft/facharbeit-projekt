@@ -41,6 +41,10 @@ public class Octree implements IOctreeParentNode {
         rootNode = rootNode.removeVoxel(new Vector3i(x, y, z), this, this);
     }
 
+    public void deleteEverything() {
+        rootNode.deleteEverything();
+    }
+
     public int getEdgeLengthExponent() {
         return edgeLengthExponent;
     }

@@ -4,6 +4,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
 import java.util.Queue;
@@ -81,6 +82,7 @@ public class Window {
         glfwSetMouseButtonCallback(handle, this::mouseButtonCallback);
         glfwSetCursorPosCallback(handle, this::cursorPosCallback);
         glfwSetScrollCallback(handle, this::scrollCallback);
+        glfwSetErrorCallback(Window::errorCallback);
 
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -96,6 +98,7 @@ public class Window {
     }
 
     public void destroy() {
+        GL.destroy();
         glfwDestroyWindow(handle);
     }
 
@@ -372,6 +375,10 @@ public class Window {
 
     private void scrollCallback(long handle, double xOffset, double yOffset) {
         currentScroll += yOffset;
+    }
+
+    private static void errorCallback(int length, long message) {
+        System.err.println(MemoryUtil.memUTF8(message, length));
     }
 
 }

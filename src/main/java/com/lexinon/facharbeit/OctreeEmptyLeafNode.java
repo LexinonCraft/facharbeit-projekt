@@ -25,6 +25,11 @@ public class OctreeEmptyLeafNode implements IOctreeNode {
     }
 
     @Override
+    public void deleteEverything() {
+        // Nothing
+    }
+
+    @Override
     public void print(int depth) {
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < depth; i++) {

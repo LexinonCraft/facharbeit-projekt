@@ -62,6 +62,11 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         }
     }
 
+    @Override
+    public void deleteEverything() {
+        mesh.delete();
+    }
+
     public void updateMesh(boolean doOcclusionTest, MeshBuilder meshBuilder) {
         meshBuilder = new MeshBuilder(meshBuilder);
 

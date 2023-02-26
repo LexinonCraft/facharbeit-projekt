@@ -122,6 +122,18 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
     }
 
     @Override
+    public void deleteEverything() {
+        subtree1.deleteEverything();
+        subtree2.deleteEverything();
+        subtree3.deleteEverything();
+        subtree4.deleteEverything();
+        subtree5.deleteEverything();
+        subtree6.deleteEverything();
+        subtree7.deleteEverything();
+        subtree8.deleteEverything();
+    }
+
+    @Override
     public void incrementNonEmptySubtreesCount() {
         nonEmptySubtrees++;
     }

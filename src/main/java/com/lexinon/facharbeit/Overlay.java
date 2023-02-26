@@ -67,4 +67,8 @@ public class Overlay {
         rbCurrentPosition += ScreenShader.CHARACTER_SIZE;
     }
 
+    public void deleteMesh() {
+        mesh.delete();
+    }
+
 }
