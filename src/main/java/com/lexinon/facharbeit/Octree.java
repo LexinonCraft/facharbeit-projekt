@@ -5,7 +5,7 @@ import org.joml.Vector3i;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.lwjgl.opengl.GL20C.glUniform1i;
+import static org.lwjgl.opengl.GL20C.*;
 
 public class Octree implements IOctreeParentNode {
 
@@ -23,7 +23,8 @@ public class Octree implements IOctreeParentNode {
 
     public void render() {
         game.voxelShader.use();
-        glUniform1i(game.voxelShader.getLoc("TextureAtlas"), 0);
+        glUniform1i(game.voxelShader.getTextureAtlasLoc(), 0);
+        glUniform4f(game.voxelShader.getFogColorLoc(), 0.74609375f, 0.9140625f, 0.95703125f, 1f); // TODO
         rootNode.render(-(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), 1 << (depth + edgeLengthExponent), this);
     }
 

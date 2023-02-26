@@ -173,7 +173,7 @@ public class Game {
 
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
-        noiseGenerator = new PerlinNoiseGenerator(0, 512);
+        noiseGenerator = new PerlinNoiseGenerator(1, 512);
         noiseGenerator.noise(8f, 3f)
                 .noise(32f, 1f)
                 .noise(14f, 2f);

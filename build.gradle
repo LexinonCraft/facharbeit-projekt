@@ -28,6 +28,10 @@ tasks.getByName('processResources') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+File runningDir = new File('run/')
+runningDir.mkdirs()
+tasks.run.workingDir = runningDir
+
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
         def osArch = System.getProperty("os.arch")

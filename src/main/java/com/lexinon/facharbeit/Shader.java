@@ -32,6 +32,8 @@ public class Shader {
             fragmentShaderStringBuilder.append("\n");
         }
         String fragmentShaderCode = fragmentShaderStringBuilder.toString();
+        fragmentShaderCode = fragmentShaderCode.replace("_replace_near_", String.valueOf(camera.getZNear()));
+        fragmentShaderCode = fragmentShaderCode.replace("_replace_far_", String.valueOf(camera.getZFar()));
         int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShaderId, fragmentShaderCode);
         glCompileShader(fragmentShaderId);
