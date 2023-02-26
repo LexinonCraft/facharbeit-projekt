@@ -18,6 +18,12 @@ sourceSets {
     }
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(18))
+    }
+}
+
 tasks.getByName('processResources') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

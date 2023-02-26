@@ -1,4 +1,4 @@
-package com.lexinon.facharbeit;
+package com.lexinon.facharbeit.test;
 
 import org.joml.Vector3i;
 
