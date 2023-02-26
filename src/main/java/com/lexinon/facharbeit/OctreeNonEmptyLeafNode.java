@@ -58,7 +58,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         } else {
             parentNode.decrementNonEmptySubtreesCount();
             mesh.delete();
-            return null;
+            return new OctreeEmptyLeafNode();
         }
     }
 

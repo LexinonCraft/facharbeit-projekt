@@ -4,8 +4,8 @@ public class BoxShader extends Shader {
 
     private final int modelViewProjectionMatrixLoc;
 
-    public BoxShader() {
-        super("voxel");
+    public BoxShader(Camera camera) {
+        super("voxel", camera);
         modelViewProjectionMatrixLoc = getLoc("ModelViewProjectionMatrix");
     }
 

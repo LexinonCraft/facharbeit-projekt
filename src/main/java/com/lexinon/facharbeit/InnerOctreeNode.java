@@ -118,7 +118,7 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
             return this;
 
         parentNode.decrementNonEmptySubtreesCount();
-        return null;
+        return new OctreeEmptyLeafNode();
     }
 
     @Override

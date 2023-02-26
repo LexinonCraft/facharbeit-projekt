@@ -9,7 +9,7 @@ public class Shader {
 
     private final int programId;
 
-    public Shader(String name) {
+    public Shader(String name, Camera camera) {
         InputStream vertexShaderInputStream = Game.class.getResourceAsStream(String.format("/%s.vert", name));
         Scanner vertexShaderScanner = new Scanner(vertexShaderInputStream);
         StringBuilder vertexShaderStringBuilder = new StringBuilder();
@@ -18,6 +18,8 @@ public class Shader {
             vertexShaderStringBuilder.append("\n");
         }
         String vertexShaderCode = vertexShaderStringBuilder.toString();
+        vertexShaderCode = vertexShaderCode.replace("_replace_near_", String.valueOf(camera.getZNear()));
+        vertexShaderCode = vertexShaderCode.replace("_replace_far_", String.valueOf(camera.getZFar()));
         int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShaderId, vertexShaderCode);
         glCompileShader(vertexShaderId);

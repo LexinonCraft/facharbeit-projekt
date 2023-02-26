@@ -6,8 +6,8 @@ public class ScreenShader extends Shader {
 
     public static final int CHARACTER_SIZE = 25;
 
-    public ScreenShader() {
-        super("screen");
+    public ScreenShader(Camera camera) {
+        super("screen", camera);
     }
 
 }

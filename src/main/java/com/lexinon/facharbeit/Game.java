@@ -62,9 +62,9 @@ public class Game {
         //camera.setYaw(-0.25f * (float) Math.PI);
         camera.updateViewProjectionMatrix();
 
-        voxelShader = new VoxelShader();
-        boxShader = new BoxShader();
-        screenShader = new ScreenShader();
+        voxelShader = new VoxelShader(camera);
+        boxShader = new BoxShader(camera);
+        screenShader = new ScreenShader(camera);
 
         /*int testArray = glGenVertexArrays();
         glBindVertexArray(testArray);
