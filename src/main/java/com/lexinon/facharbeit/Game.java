@@ -174,24 +174,25 @@ public class Game {
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
         noiseGenerator = new PerlinNoiseGenerator(1, 512);
-        noiseGenerator.noise(8f, 3f)
-                .noise(32f, 1f)
-                .noise(14f, 2f);
+        noiseGenerator.noise(4, 2f)
+                .noise(8f, 1f)
+                .noise(16f, 0.5f)
+                .noise(32f, 0.25f);
 
         noiseGenerator.normalizeTexture();
         float[] heightMap = noiseGenerator.getTexture();
         for(int i = 0; i < heightMap.length; i++) {
-            int terrainHeight = (int) (heightMap[i] * 100);
+            int terrainHeight = (int) (Math.pow(heightMap[i] * 1.2 + 1.2, 2) * 50);
             int x = noiseGenerator.getXPosByIndex(i, 512);
             int z = noiseGenerator.getYPosByIndex(i, 512);
-            if(terrainHeight < 0)
-                for (int y = 0; y > terrainHeight; y--) {
+            if(terrainHeight < 64)
+                for (int y = 64; y > terrainHeight; y--) {
                     octree.addVoxel(new Vector3i(x, y, z), Material.WATER.getId());
                 }
             octree.addVoxel(new Vector3i(x, terrainHeight, z), Material.GRASS.getId());
-            for(int y = terrainHeight - 1; y >= -100 && y >= terrainHeight - 3; y--)
+            for(int y = terrainHeight - 1; y >= 0 && y >= terrainHeight - 3; y--)
                 octree.addVoxel(new Vector3i(x, y, z), Material.DIRT.getId());
-            for(int y = terrainHeight - 3; y >= -100; y--)
+            for(int y = terrainHeight - 3; y >= 0; y--)
                 octree.addVoxel(new Vector3i(x, y, z), Material.TEST_STONE.getId());
         }
 

@@ -8,7 +8,7 @@ uniform vec4 fogColor;
 
 float getFogFactor(float d) {
     const float fogMax = _replace_far_;
-    const float fogMin = _replace_near_;
+    const float fogMin = _replace_far_ * 0.9;
 
     if (d>=fogMax) return 1;
     if (d<=fogMin) return 0;
