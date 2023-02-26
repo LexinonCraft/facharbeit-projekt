@@ -15,6 +15,8 @@ import static org.lwjgl.opengl.GL30C.*;
 
 public class BoxMesh {
 
+    private static final FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+
     private int vao;
     private int vbo;
 
@@ -55,12 +57,13 @@ public class BoxMesh {
         glLineWidth(5);
         glBindVertexArray(vao);
 
-        Matrix4f modelViewProjectionMatrix = new Matrix4f(game.camera.getViewProjectionMatrix())
-                .translate(new Vector3f(pos));
+        Matrix4f modelViewProjectionMatrix = game.camera.getViewProjectionMatrix()
+                .translate(pos.x, pos.y, pos.z);
 
-        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
-        glUniformMatrix4fv(game.voxelShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
+        glUniformMatrix4fv(game.boxShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_LINE_STRIP, 0, 16);
+
+        modelViewProjectionMatrix.translate(-pos.x, -pos.y, -pos.z);
     }
 
     public void delete() {

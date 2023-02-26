@@ -1,9 +1,11 @@
 package com.lexinon.facharbeit;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL20C.*;
@@ -14,12 +16,15 @@ public class Game {
 
     private Window window;
     public Camera camera;
-    private TextureAtlas textureAtlas;
+    private VoxelTextureAtlas voxelTextureAtlas;
+    private ScreenTextureAtlas screenTextureAtlas;
 
     public VoxelShader voxelShader;
     public BoxShader boxShader;
+    public ScreenShader screenShader;
     private Octree octree;
     private BoxMesh boxMesh;
+    private ScreenMesh screenMesh;
 
     private MeshBuilder meshBuilder;
 
@@ -57,6 +62,7 @@ public class Game {
 
         voxelShader = new VoxelShader();
         boxShader = new BoxShader();
+        //screenShader = new ScreenShader();
 
         /*int testArray = glGenVertexArrays();
         glBindVertexArray(testArray);
@@ -168,8 +174,11 @@ public class Game {
 
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
-        textureAtlas = new TextureAtlas();
-        textureAtlas.activate(this);
+        voxelTextureAtlas = new VoxelTextureAtlas();
+        voxelTextureAtlas.activate(this);
+
+        //screenTextureAtlas = new ScreenTextureAtlas();
+        //screenTextureAtlas.activate(this);
 
         boxMesh = new BoxMesh();
 
@@ -182,6 +191,11 @@ public class Game {
         glEnable(GL_MULTISAMPLE);
 
         glEnable(GL_CULL_FACE);
+
+        //screenMesh = new ScreenMesh();
+        //List<ScreenObject> screenObjectList = new ArrayList<>();
+        //screenObjectList.add(new ScreenObject(new Vector2f(0f, 0f), new Vector2f(0f, 0f)));
+        //screenMesh.display(screenObjectList);
 
         window.show();
     }
@@ -272,7 +286,8 @@ public class Game {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         octree.render();
 
-        boxMesh.draw(selectedVoxel, this);
+        //boxMesh.draw(selectedVoxel, this);
+        //screenMesh.draw(window.getFramebufferWidth(), window.getFramebufferHeight(), this);
 
         window.update();
 

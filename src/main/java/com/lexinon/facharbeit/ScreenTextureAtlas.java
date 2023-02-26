@@ -11,17 +11,18 @@ import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL12C.*;
-import static org.lwjgl.opengl.GL30C.*;
+import static org.lwjgl.opengl.GL13C.*;
+import static org.lwjgl.opengl.GL20C.*;
+import static org.lwjgl.opengl.GL30C.glGenerateMipmap;
 
-public class TextureAtlas {
+public class ScreenTextureAtlas {
 
-    public static final float SIDE_LENGTH_OF_ONE_TEXTURE = 1f / 32;
-    public static final float TEXTURE_MARGIN = 1f / 3 * SIDE_LENGTH_OF_ONE_TEXTURE;
+    public static final float SIDE_LENGTH_OF_ONE_TEXTURE = 1f / 16;
 
     private final int handle;
 
-    public TextureAtlas() {
-        InputStream inputStream = TextureAtlas.class.getResourceAsStream("/texture_atlas.png");
+    public ScreenTextureAtlas() {
+        InputStream inputStream = VoxelTextureAtlas.class.getResourceAsStream("/screen_texture_atlas.png");
         BufferedImage image = null;
         try {
             image = ImageIO.read(inputStream);
@@ -47,7 +48,7 @@ public class TextureAtlas {
 
         handle = glGenTextures();
         if(handle == 0)
-            throw new IllegalStateException("Could not generate texture atlas!");
+            throw new IllegalStateException("Could not generate screen texture atlas!");
         glBindTexture(GL_TEXTURE_2D, handle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -59,14 +60,13 @@ public class TextureAtlas {
     }
 
     public void activate(Game game) {
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, handle);
-        // TODO
-        glUniform1i(game.voxelShader.getLoc("TextureAtlas"), 0);
+        //glUniform1i(game.screenShader.getLoc("TextureAtlas"), 1);
     }
 
     public static Vector2f getTexCoords(int x, int y) {
-        return new Vector2f(x, y).div(32);
+        return new Vector2f(x, y).div(64);
     }
 
 }

@@ -5,8 +5,8 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;
 
-import static com.lexinon.facharbeit.TextureAtlas.TEXTURE_MARGIN;
-import static com.lexinon.facharbeit.TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE;
+import static com.lexinon.facharbeit.VoxelTextureAtlas.TEXTURE_MARGIN;
+import static com.lexinon.facharbeit.VoxelTextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE;
 
 import java.nio.FloatBuffer;
 

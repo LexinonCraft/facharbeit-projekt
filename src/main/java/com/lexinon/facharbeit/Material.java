@@ -20,9 +20,9 @@ public class Material {
 
     private Material(String name, Vector2f texCoordsUp, Vector2f texCoordsSide, Vector2f texCoordsDown, short id) {
         this.name = name;
-        this.texCoordsUp = new Vector2f(texCoordsUp).mul(TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE);
-        this.texCoordsSide = new Vector2f(texCoordsSide).mul(TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE);
-        this.texCoordsDown = new Vector2f(texCoordsDown).mul(TextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE);
+        this.texCoordsUp = new Vector2f(texCoordsUp).mul(VoxelTextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE);
+        this.texCoordsSide = new Vector2f(texCoordsSide).mul(VoxelTextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE);
+        this.texCoordsDown = new Vector2f(texCoordsDown).mul(VoxelTextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE);
         this.id = id;
     }
 
