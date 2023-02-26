@@ -69,7 +69,7 @@ public class Octree implements IOctreeParentNode {
     }
 
     public void updateMeshs() {
-        updateMeshQueue.forEach(node -> node.updateMesh(doOcclusionTest()));
+        updateMeshQueue.forEach(node -> node.updateMesh(doOcclusionTest(), game.getMeshBuilder()));
         updateMeshQueue.clear();
     }
 

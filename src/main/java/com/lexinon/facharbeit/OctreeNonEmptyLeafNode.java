@@ -62,8 +62,8 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         }
     }
 
-    public void updateMesh(boolean doOcclusionTest) {
-        MeshBuilder meshBuilder = new MeshBuilder(6 * edgeLength * edgeLength * edgeLength);
+    public void updateMesh(boolean doOcclusionTest, MeshBuilder meshBuilder) {
+        meshBuilder = new MeshBuilder(meshBuilder);
 
         if(doOcclusionTest) {
             for (int i = 0; i < content.length; i++) {

@@ -19,7 +19,7 @@ public class Camera {
         pitch = 0f;
         fov = 90;
         aspectRatio = 1;
-        zNear = 0.05f;
+        zNear = 0.1f;
         zFar = 100f;
         updateViewProjectionMatrix();
     }
@@ -73,6 +73,22 @@ public class Camera {
 
     public void setFov(float fov) {
         this.fov = fov;
+    }
+
+    public float getZNear() {
+        return zNear;
+    }
+
+    public void setZNear(float zNear) {
+        this.zNear = zNear;
+    }
+
+    public float getZFar() {
+        return zFar;
+    }
+
+    public void setZFar(float zFar) {
+        this.zFar = zFar;
     }
 
 }

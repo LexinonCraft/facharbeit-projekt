@@ -21,6 +21,8 @@ public class Game {
     private Octree octree;
     private BoxMesh boxMesh;
 
+    private MeshBuilder meshBuilder;
+
     private float movementSpeed = 1f;
     private float selectionDistance = 5f;
 
@@ -28,6 +30,8 @@ public class Game {
     private int destroyCooldown = 0;
     private int placeCooldown = 0;
     private boolean terminate = false;
+
+    public static int testCounter = 0;
 
     public static Game get() {
         return game;
@@ -122,9 +126,9 @@ public class Game {
 
         //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
 
-        for(int x = -50; x < 50; x++) {
+        for(int x = -512; x < 512; x++) {
             for(int y = 0; y < 2; y++) {
-                for (int z = -50; z < 50; z++) {
+                for (int z = -512; z < 512; z++) {
                     //if(x == 0 && y == 0 && z == 0)
                     //    continue;
                     octree.addVoxel(new Vector3i(x, y, z), Material.TEST_STONE.getId());
@@ -132,9 +136,9 @@ public class Game {
             }
         }
 
-        for(int x = -50; x < 50; x++) {
+        for(int x = -512; x < 512; x++) {
             for(int y = 2; y < 3; y++) {
-                for (int z = -50; z < 50; z++) {
+                for (int z = -512; z < 512; z++) {
                     //if(x == 0 && y == 0 && z == 0)
                     //    continue;
                     octree.addVoxel(new Vector3i(x, y, z), Material.GRASS.getId());
@@ -168,6 +172,8 @@ public class Game {
         textureAtlas.activate(this);
 
         boxMesh = new BoxMesh();
+
+        meshBuilder = new MeshBuilder(6 * (1 << octree.getEdgeLengthExponent()) * (1 << octree.getEdgeLengthExponent()) * (1 << octree.getEdgeLengthExponent()));
 
         glEnable(GL_DEPTH_TEST);
 
@@ -228,6 +234,11 @@ public class Game {
             placeCooldown = 300_000_000;
         }
 
+        if(!window.isLeftMouseButtonPressed())
+            destroyCooldown = 0;
+        if(!window.isRightMouseButtonPressed())
+            placeCooldown = 0;
+
         double scroll = window.getScroll();
         if(window.isCtrlPressed()) {
             if(window.isAltPressed()) {
@@ -281,4 +292,7 @@ public class Game {
         this.camera = camera;
     }
 
+    public MeshBuilder getMeshBuilder() {
+        return meshBuilder;
+    }
 }

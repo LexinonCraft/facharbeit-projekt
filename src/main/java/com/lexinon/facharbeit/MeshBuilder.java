@@ -19,6 +19,10 @@ public class MeshBuilder {
         buffer = BufferUtils.createFloatBuffer(maxAmountOfFaces * Mesh.MAX_AMOUNT_OF_FLOATS_PER_FACE);
     }
 
+    public MeshBuilder(MeshBuilder meshBuilder) {
+        buffer = meshBuilder.buffer.flip().limit(meshBuilder.buffer.capacity());
+    }
+
     public void addFace(Vector3i voxelPos, Direction direction, short material) {
         addFace(voxelPos, direction, Material.getTexCoords(material, direction));
     }
