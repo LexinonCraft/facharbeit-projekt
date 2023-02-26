@@ -48,13 +48,11 @@ public class Mesh {
     public void draw(int originX, int originY, int originZ, Game game) {
         glBindVertexArray(vao);
 
-        Matrix4f modelViewProjectionMatrix = game.camera.getViewProjectionMatrix()
-                .translate(originX, originY, originZ);
+        Matrix4f modelViewProjectionMatrix = game.camera.getModelViewProjectionMatrix().set(game.camera.getViewProjectionMatrix())
+                        .translate(originX, originY, originZ);
 
         glUniformMatrix4fv(game.voxelShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_TRIANGLES, 0, vertices);
-
-        modelViewProjectionMatrix.translate(-originX, -originY, -originZ);
     }
 
     public void delete() {

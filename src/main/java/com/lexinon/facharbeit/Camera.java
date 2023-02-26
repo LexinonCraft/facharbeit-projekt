@@ -12,6 +12,7 @@ public class Camera {
     private float aspectRatio;
     private float zNear, zFar;
     private Matrix4f viewProjectionMatrix;
+    private final Matrix4f modelViewProjectionMatrix = new Matrix4f();
 
     public Camera() {
         eye = new Vector3f();
@@ -91,4 +92,7 @@ public class Camera {
         this.zFar = zFar;
     }
 
+    public Matrix4f getModelViewProjectionMatrix() {
+        return modelViewProjectionMatrix;
+    }
 }

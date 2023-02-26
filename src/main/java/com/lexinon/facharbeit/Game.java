@@ -324,13 +324,12 @@ public class Game {
 
         window.update();
 
-        window.setTitle(String.format("Facharbeit Projekt, Position = (%d,%d,%d)", (int) camera.getEye().x, (int) camera.getEye().y, (int) camera.getEye().z));
-
         if(window.shouldClose())
             shouldTerminate = true;
     }
 
     public void terminate() {
+        window.hide();
         octree.deleteEverything();
         boxMesh.delete();
         overlay.deleteMesh();
