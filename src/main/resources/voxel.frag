@@ -2,7 +2,7 @@
 
 in vec2 texCoords;
 
-layout (binding = 0) uniform sampler2D TextureAtlas;
+uniform sampler2D TextureAtlas;
 
 out vec4 fragColor;
 

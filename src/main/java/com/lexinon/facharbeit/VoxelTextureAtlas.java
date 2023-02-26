@@ -20,7 +20,7 @@ public class VoxelTextureAtlas {
 
     private final int handle;
 
-    public VoxelTextureAtlas() {
+    public VoxelTextureAtlas(Game game) {
         InputStream inputStream = VoxelTextureAtlas.class.getResourceAsStream("/texture_atlas.png");
         BufferedImage image = null;
         try {
@@ -48,6 +48,7 @@ public class VoxelTextureAtlas {
         handle = glGenTextures();
         if(handle == 0)
             throw new IllegalStateException("Could not generate texture atlas!");
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, handle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -56,12 +57,6 @@ public class VoxelTextureAtlas {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
         glGenerateMipmap(GL_TEXTURE_2D);
-    }
-
-    public void activate(Game game) {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, handle);
-        //glUniform1i(game.voxelShader.getLoc("TextureAtlas"), 0);
     }
 
     public static Vector2f getTexCoords(int x, int y) {

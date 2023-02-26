@@ -17,12 +17,10 @@ import static org.lwjgl.opengl.GL30C.glGenerateMipmap;
 
 public class ScreenTextureAtlas {
 
-    public static final float SIDE_LENGTH_OF_ONE_TEXTURE = 1f / 16;
-
     private final int handle;
 
-    public ScreenTextureAtlas() {
-        InputStream inputStream = VoxelTextureAtlas.class.getResourceAsStream("/screen_texture_atlas.png");
+    public ScreenTextureAtlas(Game game) {
+        InputStream inputStream = ScreenTextureAtlas.class.getResourceAsStream("/screen_texture_atlas.png");
         BufferedImage image = null;
         try {
             image = ImageIO.read(inputStream);
@@ -49,6 +47,7 @@ public class ScreenTextureAtlas {
         handle = glGenTextures();
         if(handle == 0)
             throw new IllegalStateException("Could not generate screen texture atlas!");
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, handle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -57,12 +56,6 @@ public class ScreenTextureAtlas {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
         glGenerateMipmap(GL_TEXTURE_2D);
-    }
-
-    public void activate(Game game) {
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, handle);
-        //glUniform1i(game.screenShader.getLoc("TextureAtlas"), 1);
     }
 
     public static Vector2f getTexCoords(int x, int y) {

@@ -1,10 +1,5 @@
 package com.lexinon.facharbeit;
 
-import it.unimi.dsi.fastutil.Pair;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -14,12 +9,11 @@ import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL15C.*;
 import static org.lwjgl.opengl.GL20C.*;
 import static org.lwjgl.opengl.GL30C.*;
-import static com.lexinon.facharbeit.ScreenTextureAtlas.SIDE_LENGTH_OF_ONE_TEXTURE;
 
 public class ScreenMesh {
 
-    private int vao;
-    private int vbo;
+    private final int vao;
+    private final int vbo;
     private int amountOfTetxures = 0;
 
     public ScreenMesh() {
@@ -35,43 +29,43 @@ public class ScreenMesh {
         glEnableVertexAttribArray(1);
     }
 
-    public void display(List<ScreenObject> textures) {
+    public void display(List<ScreenObject> textures, Window window) {
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
         int capacity = textures.size() * 24;
         FloatBuffer buffer = BufferUtils.createFloatBuffer(capacity);
 
-        for(ScreenObject pair : textures) {
-            buffer.put(pair.pos().x).put(pair.pos().y)
-                    .put(pair.tex().x).put(pair.tex().y)
-                    .put(pair.pos().x + 1).put(pair.pos().y)
-                    .put(pair.tex().x + SIDE_LENGTH_OF_ONE_TEXTURE).put(pair.tex().y)
-                    .put(pair.pos().x + 1).put(pair.pos().y + 1)
-                    .put(pair.tex().x + SIDE_LENGTH_OF_ONE_TEXTURE).put(pair.tex().y + SIDE_LENGTH_OF_ONE_TEXTURE)
-                    .put(pair.pos().x).put(pair.pos().y)
-                    .put(pair.tex().x).put(pair.tex().y)
-                    .put(pair.pos().x + 1).put(pair.pos().y + 1)
-                    .put(pair.tex().x + SIDE_LENGTH_OF_ONE_TEXTURE).put(pair.tex().y + SIDE_LENGTH_OF_ONE_TEXTURE)
-                    .put(pair.pos().x).put(pair.pos().y + 1)
-                    .put(pair.tex().x).put(pair.tex().y + SIDE_LENGTH_OF_ONE_TEXTURE);
-        }
+        float a = 2f / window.getFramebufferWidth();
+        float b = 2f / window.getFramebufferHeight();
 
+        for(ScreenObject screenObject : textures) {
+            buffer.put(screenObject.pos().x * a - 1).put(screenObject.pos().y * b - 1)
+                    .put(screenObject.tex().x / 16).put((screenObject.tex().y + 1) / 16)
+                    .put((screenObject.pos().x + ScreenShader.CHARACTER_SIZE) * a - 1).put(screenObject.pos().y * b - 1)
+                    .put((screenObject.tex().x + 1) / 16).put((screenObject.tex().y + 1) / 16)
+                    .put((screenObject.pos().x + ScreenShader.CHARACTER_SIZE) * a - 1).put((screenObject.pos().y + ScreenShader.CHARACTER_SIZE) * b - 1)
+                    .put((screenObject.tex().x + 1) / 16).put(screenObject.tex().y / 16)
+                    .put(screenObject.pos().x * a - 1).put(screenObject.pos().y * b - 1)
+                    .put(screenObject.tex().x / 16).put((screenObject.tex().y + 1) / 16)
+                    .put((screenObject.pos().x + ScreenShader.CHARACTER_SIZE) * a - 1).put((screenObject.pos().y + ScreenShader.CHARACTER_SIZE) * b - 1)
+                    .put((screenObject.tex().x + 1) / 16).put(screenObject.tex().y / 16)
+                    .put(screenObject.pos().x * a - 1).put((screenObject.pos().y + ScreenShader.CHARACTER_SIZE) * b - 1)
+                    .put(screenObject.tex().x / 16).put(screenObject.tex().y / 16);
+        }
         buffer.flip();
 
-        for(int i = 0; i < buffer.limit(); i++) {
-            System.out.println(buffer.get(i));
-        }
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
         amountOfTetxures = textures.size();
     }
 
-    public void draw(int screenWidth, int screenHeight, Game game) {
-        game.screenShader.use();
+    public void draw(int screenWidth, int screenHeight, ScreenShader shader) {
+        shader.use();
+        glUniform1i(shader.getLoc("ScreenTextureAtlas"), 1);
         glBindVertexArray(vao);
 
-        game.screenShader.screenSize(screenWidth, screenHeight);
-        glDrawArrays(GL_LINE_STRIP, 0, 2 * amountOfTetxures);
+        glDrawArrays(GL_TRIANGLES, 0, 6 * amountOfTetxures);
     }
 
     public void delete() {

@@ -24,12 +24,13 @@ public class Game {
     public ScreenShader screenShader;
     private Octree octree;
     private BoxMesh boxMesh;
-    private ScreenMesh screenMesh;
+    private Overlay overlay;
 
     private MeshBuilder meshBuilder;
 
     private float movementSpeed = 1f;
     private float selectionDistance = 5f;
+    private boolean hideOverlay = false;
 
     private long lastTime;
     private int destroyCooldown = 0;
@@ -62,7 +63,7 @@ public class Game {
 
         voxelShader = new VoxelShader();
         boxShader = new BoxShader();
-        //screenShader = new ScreenShader();
+        screenShader = new ScreenShader();
 
         /*int testArray = glGenVertexArrays();
         glBindVertexArray(testArray);
@@ -132,9 +133,9 @@ public class Game {
 
         //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
 
-        for(int x = -512; x < 512; x++) {
+        for(int x = -64; x < 64; x++) {
             for(int y = 0; y < 2; y++) {
-                for (int z = -512; z < 512; z++) {
+                for (int z = -64; z < 64; z++) {
                     //if(x == 0 && y == 0 && z == 0)
                     //    continue;
                     octree.addVoxel(new Vector3i(x, y, z), Material.TEST_STONE.getId());
@@ -142,9 +143,9 @@ public class Game {
             }
         }
 
-        for(int x = -512; x < 512; x++) {
+        for(int x = -64; x < 64; x++) {
             for(int y = 2; y < 3; y++) {
-                for (int z = -512; z < 512; z++) {
+                for (int z = -64; z < 64; z++) {
                     //if(x == 0 && y == 0 && z == 0)
                     //    continue;
                     octree.addVoxel(new Vector3i(x, y, z), Material.GRASS.getId());
@@ -174,28 +175,18 @@ public class Game {
 
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
-        voxelTextureAtlas = new VoxelTextureAtlas();
-        voxelTextureAtlas.activate(this);
-
-        //screenTextureAtlas = new ScreenTextureAtlas();
-        //screenTextureAtlas.activate(this);
+        voxelTextureAtlas = new VoxelTextureAtlas(game);
+        screenTextureAtlas = new ScreenTextureAtlas(game);
 
         boxMesh = new BoxMesh();
 
+        overlay = new Overlay(this);
+
         meshBuilder = new MeshBuilder(6 * (1 << octree.getEdgeLengthExponent()) * (1 << octree.getEdgeLengthExponent()) * (1 << octree.getEdgeLengthExponent()));
 
-        glEnable(GL_DEPTH_TEST);
-
         glEnable(GL_POLYGON_SMOOTH);
-
         glEnable(GL_MULTISAMPLE);
-
         glEnable(GL_CULL_FACE);
-
-        //screenMesh = new ScreenMesh();
-        //List<ScreenObject> screenObjectList = new ArrayList<>();
-        //screenObjectList.add(new ScreenObject(new Vector2f(0f, 0f), new Vector2f(0f, 0f)));
-        //screenMesh.display(screenObjectList);
 
         window.show();
     }
@@ -220,7 +211,7 @@ public class Game {
                     - (window.isKeySPressed() ? movementSpeed * (float) Math.sin(yaw) : 0)
                     + (window.isKeyDPressed() ? movementSpeed * (float) Math.cos(yaw) : 0)
                     - (window.isKeyAPressed() ? movementSpeed * (float) Math.cos(yaw) : 0),
-                (window.isSpacebarPressed() ? 1 : 0) - (window.isShiftPressed() ? 1 : 0),
+                (window.isSpacebarPressed() ? movementSpeed : 0) - (window.isShiftPressed() ? movementSpeed : 0),
                 (window.isKeySPressed() ? movementSpeed * (float) Math.cos(-yaw) : 0)
                         - (window.isKeyWPressed() ? movementSpeed * (float) Math.cos(-yaw) : 0)
                         + (window.isKeyAPressed() ? movementSpeed * (float) Math.sin(-yaw) : 0)
@@ -260,7 +251,7 @@ public class Game {
                     System.exit(-1); // ( ͡° ͜ʖ ͡°)
             } else {
                 movementSpeed += (float) scroll * 0.25;
-                movementSpeed = Math.min(movementSpeed, 5);
+                movementSpeed = Math.min(movementSpeed, 20);
                 movementSpeed = Math.max(movementSpeed, 0);
             }
         } else {
@@ -282,12 +273,34 @@ public class Game {
 
         octree.updateMeshs();
 
+        if(window.isKeyF1Clicked())
+            hideOverlay = !hideOverlay;
+
         glClearColor(0.74609375f, 0.9140625f, 0.95703125f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
         octree.render();
 
-        //boxMesh.draw(selectedVoxel, this);
-        //screenMesh.draw(window.getFramebufferWidth(), window.getFramebufferHeight(), this);
+        if(!hideOverlay)
+            boxMesh.draw(selectedVoxel, this);
+
+        glDisable(GL_DEPTH_TEST);
+        /*screenMesh = new ScreenMesh();
+        List<ScreenObject> screenObjectList = new ArrayList<>();
+        screenObjectList.add(new ScreenObject(new Vector2f(0f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(8f, 2f)));
+        screenObjectList.add(new ScreenObject(new Vector2f(1f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(1f, 4f)));
+        screenObjectList.add(new ScreenObject(new Vector2f(2f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(12f, 4f)));
+        screenObjectList.add(new ScreenObject(new Vector2f(3f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(12f, 4f)));
+        screenObjectList.add(new ScreenObject(new Vector2f(4f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(15f, 4f)));
+
+        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 4f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(7f, 3f)));
+        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 3f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(5f, 4f)));
+        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 2f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(12f, 4f)));
+        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 1f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(4f, 5f)));
+        screenMesh.display(screenObjectList, window);
+        screenMesh.draw(window.getFramebufferWidth(), window.getFramebufferHeight(), this);*/
+        if(!hideOverlay)
+            overlay.draw();
 
         window.update();
 
@@ -295,8 +308,6 @@ public class Game {
 
         if(window.shouldClose())
             terminate = true;
-
-        System.gc();
     }
 
     public Camera getCamera() {
@@ -310,4 +321,9 @@ public class Game {
     public MeshBuilder getMeshBuilder() {
         return meshBuilder;
     }
+
+    public Window getWindow() {
+        return window;
+    }
+
 }

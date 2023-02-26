@@ -2,10 +2,13 @@
 
 in vec2 texCoords;
 
-layout (binding = 1) uniform sampler2D TextureAtlas;
+uniform sampler2D ScreenTextureAtlas;
 
 out vec4 fragColor;
 
 void main() {
-    fragColor = texture(TextureAtlas, texCoords);
+    vec4 texColor = texture(ScreenTextureAtlas, texCoords);
+    if(texColor.a < 0.1)
+    discard;
+    fragColor = texColor;
 }

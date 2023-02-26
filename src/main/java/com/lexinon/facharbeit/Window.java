@@ -23,7 +23,6 @@ public class Window {
     private int fullscreenRefreshRate = 0;
     private boolean sizeChanged = true;
     private String title;
-    private final Queue<Runnable> eventQueue = new LinkedBlockingQueue<>();
 
     private boolean trackMouse = false;
     private double lastMouseXPos = 0, lastMouseYPos = 0;
@@ -42,6 +41,8 @@ public class Window {
     private boolean altPressed = false;
     private boolean leftMouseButtonPressed = false;
     private boolean rightMouseButtonPressed = false;
+
+    private boolean keyF1Clicked = false;
 
     public Window(int windowedWidth, int windowedHeight, String title) {
         this.windowedWidth = windowedWidth;
@@ -103,6 +104,8 @@ public class Window {
     }
 
     public void update() {
+        keyF1Clicked = false;
+
         glfwSwapBuffers(handle);
         glfwPollEvents();
 
@@ -115,9 +118,6 @@ public class Window {
 
         lastScroll = currentScroll;
         currentScroll = 0;
-
-        eventQueue.forEach(Runnable::run);
-        eventQueue.clear();
     }
 
     public double getMouseXMovement() {
@@ -263,10 +263,13 @@ public class Window {
         return rightMouseButtonPressed;
     }
 
+    public boolean isKeyF1Clicked() {
+        return keyF1Clicked;
+    }
+
     public double getScroll() {
         return lastScroll;
     }
-
     private void framebufferSizeCallback(long handle, int width, int height) {
         framebufferWidth = width;
         framebufferHeight = height;
@@ -275,83 +278,83 @@ public class Window {
     }
 
     private void keyCallback(long handle, int key, int scancode, int action, int mods) {
-        eventQueue.add(() -> {
-            if(key == GLFW_KEY_ESCAPE && trackMouse && action == GLFW_PRESS) {
-                trackMouse = false;
-                glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            }
+        if(key == GLFW_KEY_ESCAPE && trackMouse && action == GLFW_PRESS) {
+            trackMouse = false;
+            glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
 
-            if(key == GLFW_KEY_F11 && action == GLFW_PRESS)
-                toggleFullscreen();
-            if(key == GLFW_KEY_F12 && action == GLFW_PRESS)
-                toggleFullscreenMonitor();
+        if(key == GLFW_KEY_F11 && action == GLFW_PRESS)
+            toggleFullscreen();
+        if(key == GLFW_KEY_F12 && action == GLFW_PRESS)
+            toggleFullscreenMonitor();
 
-            switch(key) {
-                case GLFW_KEY_W -> {
-                    if (action == GLFW_PRESS)
-                        keyWPressed = true;
-                    if (action == GLFW_RELEASE)
-                        keyWPressed = false;
-                }
-                case GLFW_KEY_A -> {
-                    if (action == GLFW_PRESS)
-                        keyAPressed = true;
-                    if (action == GLFW_RELEASE)
-                        keyAPressed = false;
-                }
-                case GLFW_KEY_S -> {
-                    if (action == GLFW_PRESS)
-                        keySPressed = true;
-                    if (action == GLFW_RELEASE)
-                        keySPressed = false;
-                }
-                case GLFW_KEY_D -> {
-                    if (action == GLFW_PRESS)
-                        keyDPressed = true;
-                    if (action == GLFW_RELEASE)
-                        keyDPressed = false;
-                }
-                case GLFW_KEY_SPACE -> {
-                    if (action == GLFW_PRESS)
-                        spacebarPressed = true;
-                    if (action == GLFW_RELEASE)
-                        spacebarPressed = false;
-                }
-                case GLFW_KEY_LEFT_SHIFT -> {
-                    if (action == GLFW_PRESS)
-                        shiftPressed = true;
-                    if (action == GLFW_RELEASE)
-                        shiftPressed = false;
-                }
-                case GLFW_KEY_LEFT_CONTROL -> {
-                    if (action == GLFW_PRESS)
-                        ctrlPressed = true;
-                    if (action == GLFW_RELEASE)
-                        ctrlPressed = false;
-                }
-                case GLFW_KEY_LEFT_ALT -> {
-                    if (action == GLFW_PRESS)
-                        altPressed = true;
-                    if (action == GLFW_RELEASE)
-                        altPressed = false;
-                }
+        switch(key) {
+            case GLFW_KEY_W -> {
+                if (action == GLFW_PRESS)
+                    keyWPressed = true;
+                if (action == GLFW_RELEASE)
+                    keyWPressed = false;
             }
-        });
+            case GLFW_KEY_A -> {
+                if (action == GLFW_PRESS)
+                    keyAPressed = true;
+                if (action == GLFW_RELEASE)
+                    keyAPressed = false;
+            }
+            case GLFW_KEY_S -> {
+                if (action == GLFW_PRESS)
+                    keySPressed = true;
+                if (action == GLFW_RELEASE)
+                    keySPressed = false;
+            }
+            case GLFW_KEY_D -> {
+                if (action == GLFW_PRESS)
+                    keyDPressed = true;
+                if (action == GLFW_RELEASE)
+                    keyDPressed = false;
+            }
+            case GLFW_KEY_SPACE -> {
+                if (action == GLFW_PRESS)
+                    spacebarPressed = true;
+                if (action == GLFW_RELEASE)
+                    spacebarPressed = false;
+            }
+            case GLFW_KEY_LEFT_SHIFT -> {
+                if (action == GLFW_PRESS)
+                    shiftPressed = true;
+                if (action == GLFW_RELEASE)
+                    shiftPressed = false;
+            }
+            case GLFW_KEY_LEFT_CONTROL -> {
+                if (action == GLFW_PRESS)
+                    ctrlPressed = true;
+                if (action == GLFW_RELEASE)
+                    ctrlPressed = false;
+            }
+            case GLFW_KEY_LEFT_ALT -> {
+                if (action == GLFW_PRESS)
+                    altPressed = true;
+                if (action == GLFW_RELEASE)
+                    altPressed = false;
+            }
+            case GLFW_KEY_F1 -> {
+                if (action == GLFW_PRESS)
+                    keyF1Clicked = true;
+            }
+        }
     }
 
     private void mouseButtonCallback(long handle, int button, int action, int mods) {
-        eventQueue.add(() -> {
-            if(button == GLFW_MOUSE_BUTTON_1 && !trackMouse) {
-                trackMouse = true;
-                glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                return;
-            }
+        if(button == GLFW_MOUSE_BUTTON_1 && !trackMouse) {
+            trackMouse = true;
+            glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            return;
+        }
 
-            switch(button) {
-                case GLFW_MOUSE_BUTTON_1 -> leftMouseButtonPressed = action != GLFW_RELEASE;
-                case GLFW_MOUSE_BUTTON_2 -> rightMouseButtonPressed = action != GLFW_RELEASE;
-            }
-        });
+        switch(button) {
+            case GLFW_MOUSE_BUTTON_1 -> leftMouseButtonPressed = action != GLFW_RELEASE;
+            case GLFW_MOUSE_BUTTON_2 -> rightMouseButtonPressed = action != GLFW_RELEASE;
+        }
     }
 
     private void cursorPosCallback(long handle, double xPos, double yPos) {

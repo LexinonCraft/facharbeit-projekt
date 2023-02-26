@@ -5,6 +5,8 @@ import org.joml.Vector3i;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static org.lwjgl.opengl.GL20C.glUniform1i;
+
 public class Octree implements IOctreeParentNode {
 
     private IOctreeNode rootNode = new OctreeEmptyLeafNode();
@@ -21,6 +23,7 @@ public class Octree implements IOctreeParentNode {
 
     public void render() {
         game.voxelShader.use();
+        glUniform1i(game.voxelShader.getLoc("TextureAtlas"), 0);
         rootNode.render(-(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), -(1 << (depth + edgeLengthExponent - 1)), 1 << (depth + edgeLengthExponent), this);
     }
 
