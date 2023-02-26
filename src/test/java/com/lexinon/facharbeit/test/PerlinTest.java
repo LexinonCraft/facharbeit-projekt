@@ -13,29 +13,53 @@ import java.security.NoSuchAlgorithmException;
 
 public class PerlinTest {
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-        File f = new File(args[0]);
+    public static void main(String[] args) throws IOException {
+        int textureSideLength = 512;
 
-        int textureSideLength = Integer.parseInt(args[1]);
-        int gridPointDistance = Integer.parseInt(args[2]);
-        int amountGridPoints = ceilDiv(textureSideLength + 1, gridPointDistance);
-        int seed = Integer.parseInt(args[3]);
+        float[] texture = new float[textureSideLength * textureSideLength];
+        float weight = 0;
+        weight += noise(textureSideLength, 8, 0, texture, 2f);
+        weight += noise(textureSideLength, 32, 0, texture, 1f);
+
+        for(int x = 0; x < textureSideLength; x++) {
+            for(int y = 0; y < textureSideLength; y++) {
+                texture[getIndexByPos(x, y, textureSideLength)] = texture[getIndexByPos(x, y, textureSideLength)] / weight;
+            }
+        }
+
+        BufferedImage image = new BufferedImage(textureSideLength, textureSideLength, BufferedImage.TYPE_INT_ARGB);
+        for(int x = 0; x < textureSideLength; x++) {
+            for(int y = 0; y < textureSideLength; y++) {
+                float value = texture[getIndexByPos(x, y, textureSideLength)];
+                image.setRGB(x, y, new Color(value / 2 + 0.5f, value / 2 + 0.5f, value / 2 + 0.5f).getRGB());
+            }
+        }
+        ImageIO.write(image, "png", new File("perlin.png"));
+    }
+
+    public static float noise(int textureSideLength, float frequency, int seed, float[] texture, float weight) {
+        float gridPointDistance = 1f / frequency * textureSideLength;
+        int amountGridPoints = ceilDiv(textureSideLength, gridPointDistance) + 1;
 
         int gridPoints = amountGridPoints * amountGridPoints;
         Vector2f[] gradients = new Vector2f[gridPoints];
 
-        MessageDigest md = MessageDigest.getInstance("SHA256");
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         for(int i = 0; i < gridPoints; i++) {
             float angle = hash(i, seed, md) % 36_000f / 18_000f * (float) Math.PI;
             gradients[i] = new Vector2f((float) Math.sin(angle), (float) Math.cos(angle));
         }
 
-        BufferedImage image = new BufferedImage(textureSideLength, textureSideLength, BufferedImage.TYPE_INT_ARGB);
         for(int x = 0; x < textureSideLength; x++) {
             for(int y = 0; y < textureSideLength; y++) {
-                int gridPointX = x / gridPointDistance;
-                int gridPointY = y / gridPointDistance;
+                int gridPointX = x / (int) gridPointDistance;
+                int gridPointY = y / (int) gridPointDistance;
                 Vector2f gradient1 = gradients[getIndexByPos(gridPointX, gridPointY, amountGridPoints)];
                 Vector2f gradient2 = gradients[getIndexByPos(gridPointX + 1, gridPointY, amountGridPoints)];
                 Vector2f gradient3 = gradients[getIndexByPos(gridPointX + 1, gridPointY + 1, amountGridPoints)];
@@ -52,11 +76,11 @@ public class PerlinTest {
                 float f1 = s4 * interpolationFunction(1 - relX) + s3 * interpolationFunction(relX);
                 float fRes = f0 * interpolationFunction(1 - relY) + f1 * interpolationFunction(relY);
 
-                image.setRGB(x, y, new Color(fRes / 2 + 0.5f, fRes / 2 + 0.5f, fRes / 2 + 0.5f).getRGB());
+                texture[getIndexByPos(x, y, textureSideLength)] += fRes * weight;
+                //image.setRGB(x, y, new Color(fRes / 2 + 0.5f, fRes / 2 + 0.5f, fRes / 2 + 0.5f).getRGB());
             }
         }
-
-        ImageIO.write(image, "png", f);
+        return weight;
     }
 
     private static int getIndexByPos(int x, int y, int length) {
