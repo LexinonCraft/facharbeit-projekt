@@ -21,6 +21,7 @@ public class Octree implements IOctreeParentNode {
         this.leafNodeArrayEdgeLengthExponent = edgeLengthExponent;
         worldEdgeLengthHalf = 1 << (depth + edgeLengthExponent - 1);
         this.game = game;
+        Metrics.incrementNumOctreeNodes();
     }
 
     public void render() {

@@ -39,7 +39,9 @@ public class Mesh {
     }
 
     public void update(FloatBuffer buffer, int vertices) {
+        Metrics.decreaseNumTriangles(this.vertices / 3);
         this.vertices = vertices;
+        Metrics.increaseNumTriangles(this.vertices / 3);
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);

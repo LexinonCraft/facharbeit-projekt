@@ -190,6 +190,10 @@ public class Game {
                 .setCameraToTerrainHeight(0, 0, camera)
                 .generate(4, 6, this);
 
+        /*octree = new EmptyWorldGenerator()
+                .setCameraToTerrainHeight(0, 0, camera)
+                .generate(4, 6, this);*/
+
         voxelTextureAtlas = new VoxelTextureAtlas(game);
         screenTextureAtlas = new ScreenTextureAtlas(game);
 
@@ -207,6 +211,8 @@ public class Game {
     }
 
     private void tick() {
+        Metrics.tick();
+
         long currentTime = System.nanoTime();
         long actualDelta = currentTime - lastTime;
         long delta = Math.min(actualDelta, 1_000_000_000);
@@ -361,7 +367,7 @@ public class Game {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss");
         Date date = new Date();
         try {
-            ImageIO.write(image, "png", new File(String.format("Screenshot-%s.png", formatter.format(date))));
+            ImageIO.write(image, "png", new File(String.format("screenshots/Screenshot-%s.png", formatter.format(date))));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -18,6 +18,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         edgeLength = 1 << edgeLengthExponent;
         edgeLengthSquared = edgeLength * edgeLength;
         content = new short[edgeLength * edgeLength * edgeLength];
+        Metrics.incrementNumVoxelArrays();
     }
 
     @Override
@@ -59,6 +60,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
             return this;
         } else {
             parentNode.decrementNonEmptySubtreesCount();
+            Metrics.decrementNumVoxelArrays();
             mesh.delete();
             return new OctreeEmptyLeafNode();
         }

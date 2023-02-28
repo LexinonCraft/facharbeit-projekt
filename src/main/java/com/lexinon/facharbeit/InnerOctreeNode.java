@@ -19,6 +19,10 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
             subtree8 = new OctreeEmptyLeafNode(); // (0,0,0), (0,0,z), (0,y,0), (0,y,z), (x,0,0), (x,0,z), (x,y,0), (x,y,z)
     private int nonEmptySubtrees = 0;
 
+    public InnerOctreeNode() {
+        Metrics.incrementNumOctreeNodes();
+    }
+
     @Override
     public void render(int originX, int originY, int originZ, int volumeEdgeLength, Octree octree) {
         //System.out.println(origin);
@@ -118,6 +122,7 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
             return this;
 
         parentNode.decrementNonEmptySubtreesCount();
+        Metrics.decrementNumOctreeNodes();
         return new OctreeEmptyLeafNode();
     }
 

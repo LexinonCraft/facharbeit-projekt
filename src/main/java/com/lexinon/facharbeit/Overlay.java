@@ -37,6 +37,12 @@ public class Overlay {
     private void writeOverlayText() {
         writeLineRt("Facharbeitsprojekt");
         writeLineRt(String.format("Position:(%d,%d,%d)", (int) game.getCamera().getEye().x, (int) game.getCamera().getEye().y, (int) game.getCamera().getEye().z));
+        writeLineRt(String.format("Resolution:%dx%d", window.getFramebufferWidth(), window.getFramebufferHeight()));
+        writeLineRt(String.format("Fps:%s", (int) Metrics.getFps()));
+
+        writeLineLt("#Non-leaf nodes=" + Metrics.getNumOctreeNodes());
+        writeLineLt("#Arrays=" + Metrics.getNumVoxelArrays());
+        writeLineLt("#Triangles=" + Metrics.getNumTriangles());
     }
 
     private void writeLineLt(String text) {
