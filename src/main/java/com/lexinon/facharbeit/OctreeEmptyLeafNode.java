@@ -4,6 +4,10 @@ import org.joml.Vector3i;
 
 public class OctreeEmptyLeafNode implements IOctreeNode {
 
+    public OctreeEmptyLeafNode() {
+        Metrics.incrementNumEmptyOctreeLeafNodes();
+    }
+
     @Override
     public void render(int originX, int originY, int originZ, int volumeEdgeLength, Octree octree) {
         // Nothing...
@@ -12,6 +16,7 @@ public class OctreeEmptyLeafNode implements IOctreeNode {
     @Override
     public IOctreeNode addVoxel(Vector3i pos, short material, int remainingDepth, IOctreeParentNode parentNode, Octree octree) {
         parentNode.incrementNonEmptySubtreesCount();
+        deleteEverything();
         if(remainingDepth > 0)
             return new InnerOctreeNode().addVoxel(pos, material, remainingDepth, parentNode, octree);
         else
@@ -26,7 +31,7 @@ public class OctreeEmptyLeafNode implements IOctreeNode {
 
     @Override
     public void deleteEverything() {
-        // Nothing
+        Metrics.decrementNumEmptyOctreeLeafNodes();
     }
 
     @Override

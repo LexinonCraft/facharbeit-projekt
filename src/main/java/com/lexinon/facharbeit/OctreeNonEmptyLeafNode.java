@@ -33,8 +33,8 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
                 (pos.z >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1);
         if(content[getIndexByPos(newPos)] != 0)
             return this;
-        if(content[getIndexByPos(newPos)] == 0)
-            nonEmptyVoxels++;
+        nonEmptyVoxels++;
+        Metrics.incrementNumNonEmptyVoxels();
         content[getIndexByPos(newPos)] = material;
         if(!enqueuedForUpdatingMesh) {
             octree.enqueueModifiedMesh(this);
@@ -49,8 +49,10 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         Vector3i newPos = new Vector3i((pos.x >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
                 (pos.y >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
                 (pos.z >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1);
-        if(content[getIndexByPos(newPos)] != 0)
+        if(content[getIndexByPos(newPos)] != 0) {
             nonEmptyVoxels--;
+            Metrics.decrementNumNonEmptyVoxels();
+        }
         content[getIndexByPos(newPos)] = 0;
         if(nonEmptyVoxels > 0) {
             if(!enqueuedForUpdatingMesh) {
@@ -60,14 +62,15 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
             return this;
         } else {
             parentNode.decrementNonEmptySubtreesCount();
-            Metrics.decrementNumVoxelArrays();
-            mesh.delete();
+            deleteEverything();
             return new OctreeEmptyLeafNode();
         }
     }
 
     @Override
     public void deleteEverything() {
+        Metrics.decrementNumVoxelArrays();
+        Metrics.decreaseNumNonEmptyVoxels(nonEmptyVoxels);
         mesh.delete();
     }
 

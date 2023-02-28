@@ -13,6 +13,9 @@ public class Config {
     private int depth = 4;
     private WorldType worldType = WorldType.TERRAIN;
     private int seed = 236;
+    private int flatWorldHeight = 3;
+    private boolean placeTrees = true;
+    private boolean placeDecorations = true;
 
     private Config() {
 
@@ -52,6 +55,12 @@ public class Config {
                 worldType = WorldType.FLAT;
         } else if(line.startsWith("seed="))
             seed = Integer.parseInt(line.substring(5));
+        else if(line.startsWith("flat-world-height="))
+            seed = Integer.parseInt(line.substring(18));
+        else if(line.startsWith("place-trees="))
+            placeTrees = !line.substring(12).equals("false");
+        else if(line.startsWith("place-decorations="))
+            placeDecorations = !line.substring(18).equals("false");
     }
 
     public boolean doOcclusionTest() {
@@ -72,6 +81,18 @@ public class Config {
 
     public int getSeed() {
         return seed;
+    }
+
+    public int getFlatWorldHeight() {
+        return flatWorldHeight;
+    }
+
+    public boolean placeTrees() {
+        return placeTrees;
+    }
+
+    public boolean placeDecorations() {
+        return placeDecorations;
     }
 
 }

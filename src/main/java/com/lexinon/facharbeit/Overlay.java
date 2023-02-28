@@ -15,11 +15,15 @@ public class Overlay {
 
     private int ltCurrentPosition, rtCurrentPosition, lbCurrentPosition, rbCurrentPosition;
 
+    private long maxAmountOfVoxels;
+
     public Overlay(Game game) {
         mesh = new ScreenMesh();
         this.game = game;
         this.shader = game.screenShader;
         this.window = game.getWindow();
+        long worldEdgeLength = 1L << (game.getConfig().getDepth() + game.getConfig().getEdgeLengthExponent());
+        maxAmountOfVoxels = worldEdgeLength * worldEdgeLength * worldEdgeLength;
     }
 
     public void draw() {
@@ -38,11 +42,35 @@ public class Overlay {
         writeLineRt("Facharbeitsprojekt");
         writeLineRt(String.format("Position:(%d,%d,%d)", (int) game.getCamera().getEye().x, (int) game.getCamera().getEye().y, (int) game.getCamera().getEye().z));
         writeLineRt(String.format("Resolution:%dx%d", window.getFramebufferWidth(), window.getFramebufferHeight()));
+        writeLineRt(String.format("GPU:%s", window.getGpuName()));
         writeLineRt(String.format("Fps:%s", (int) Metrics.getFps()));
 
-        writeLineLt("#Non-leaf nodes=" + Metrics.getNumOctreeNodes());
-        writeLineLt("#Arrays=" + Metrics.getNumVoxelArrays());
-        writeLineLt("#Triangles=" + Metrics.getNumTriangles());
+        writeLineLt("#OF");
+        writeLineLt("Inner nodes=" + Metrics.getNumInnerOctreeNodes());
+        writeLineLt("Empty leaf nodes=" + Metrics.getNumEmptyOctreeLeafNotes());
+        writeLineLt("Voxel arrays/Non-empty leaf nodes=" + Metrics.getNumVoxelArrays());
+        writeLineLt("Non-empty voxels=" + Metrics.getNumNonEmptyVoxels());
+        writeLineLt("Triangles=" + Metrics.getNumTriangles());
+        writeLineLt("");
+        writeLineLt("INSTANCE SIZE OF");
+        writeLineLt("InnerOctreeNode=" + Metrics.INNER_OCTREE_NODE_INSTANCE_SIZE);
+        writeLineLt("EmptyOctreeLeafNode=" + Metrics.EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE);
+        writeLineLt("NonEmptyOctreeLeafNode=" + Metrics.NON_EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE);
+        writeLineLt("Mesh=" + Metrics.MESH_INSTANCE_SIZE);
+        writeLineLt("");
+        writeLineLt("CONFIGURATION");
+        writeLineLt("Octree depth=" + game.getConfig().getDepth());
+        writeLineLt("Voxel array edge length=" + (1 << game.getConfig().getEdgeLengthExponent()));
+        writeLineLt("=>Voxel array volume=" + (1 << (3 * game.getConfig().getEdgeLengthExponent())));
+        writeLineLt("=>Maximal amount of voxels=" + maxAmountOfVoxels);
+        writeLineLt("Occlusion test=" + (game.getConfig().doOcclusionTest() ? "on" : "off"));
+        writeLineLt("World type=" + switch(game.getConfig().getWorldType()) {
+            case TERRAIN -> "Terrain (seed=" + game.getConfig().getSeed() + ")";
+            case EMPTY -> "Empty";
+            case FLAT -> "Flat";
+        });
+
+        writeLineRb("(C) Tiggemann 2023");
     }
 
     private void writeLineLt(String text) {

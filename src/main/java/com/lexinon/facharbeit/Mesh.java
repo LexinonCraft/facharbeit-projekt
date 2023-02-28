@@ -58,6 +58,7 @@ public class Mesh {
     }
 
     public void delete() {
+        Metrics.decreaseNumTriangles(this.vertices / 3);
         glDeleteBuffers(vbo);
         glDeleteVertexArrays(vao);
     }

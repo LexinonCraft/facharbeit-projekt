@@ -1,11 +1,6 @@
 package com.lexinon.facharbeit;
 
-import org.joml.Vector3f;
 import org.joml.Vector3i;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
 
 public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
 
@@ -20,7 +15,7 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
     private int nonEmptySubtrees = 0;
 
     public InnerOctreeNode() {
-        Metrics.incrementNumOctreeNodes();
+        Metrics.incrementNumInnerOctreeNodes();
     }
 
     @Override
@@ -121,8 +116,8 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
         if(nonEmptySubtrees > 0)
             return this;
 
+        deleteEverything();
         parentNode.decrementNonEmptySubtreesCount();
-        Metrics.decrementNumOctreeNodes();
         return new OctreeEmptyLeafNode();
     }
 
@@ -136,6 +131,7 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
         subtree6.deleteEverything();
         subtree7.deleteEverything();
         subtree8.deleteEverything();
+        Metrics.decrementNumInnerOctreeNodes();
     }
 
     @Override

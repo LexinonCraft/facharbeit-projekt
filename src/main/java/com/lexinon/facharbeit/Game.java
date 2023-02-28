@@ -3,6 +3,7 @@ package com.lexinon.facharbeit;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;
+import org.openjdk.jol.info.ClassLayout;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -45,8 +46,6 @@ public class Game {
     private int destroyCooldown = 0;
     private int placeCooldown = 0;
     private boolean shouldTerminate = false;
-
-    public static int testCounter = 0;
 
     public static Game get() {
         return game;
@@ -194,7 +193,8 @@ public class Game {
                     .setWaterHeight(82)
                     .setSeed(config.getSeed()); //236
             case EMPTY -> new EmptyWorldGenerator();
-            default -> null;
+            case FLAT -> new FlatWorldGenerator()
+                    .setWorldSize(1 << (config.getDepth() + config.getEdgeLengthExponent()), config.getFlatWorldHeight(), 1 << (config.getDepth() + config.getEdgeLengthExponent()));
         };
 
         octree = worldGenerator.setCameraToTerrainHeight(0, 0, camera)

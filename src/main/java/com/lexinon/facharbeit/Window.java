@@ -7,10 +7,10 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.glGetString;
 import static org.lwjgl.opengl.GL11C.glViewport;
 
 public class Window {
@@ -24,6 +24,7 @@ public class Window {
     private int fullscreenRefreshRate = 0;
     private boolean sizeChanged = true;
     private String title;
+    private String gpuName = "Unknown GPU";
 
     private boolean trackMouse = false;
     private double lastMouseXPos = 0, lastMouseYPos = 0;
@@ -96,7 +97,7 @@ public class Window {
 
         monitor = glfwGetPrimaryMonitor();
 
-        // ...
+        gpuName = glGetString(GL_RENDERER);
     }
 
     public void destroy() {
@@ -234,6 +235,10 @@ public class Window {
         return sizeChanged;
     }
 
+    public String getGpuName() {
+        return gpuName;
+    }
+
     public boolean isKeyWPressed() {
         return keyWPressed;
     }
@@ -306,6 +311,8 @@ public class Window {
             toggleFullscreen();
         if(key == GLFW_KEY_F12 && action == GLFW_PRESS)
             toggleFullscreenMonitor();
+        if(key == GLFW_KEY_G && action == GLFW_PRESS)
+            System.gc();
 
         switch(key) {
             case GLFW_KEY_W -> {

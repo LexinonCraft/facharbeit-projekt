@@ -16,8 +16,6 @@ public class TerrainGenerator implements IWorldGenerator {
     private final int worldHeight = 64;
     private int waterHeight = 64;
     private int seed = 0;
-    private boolean placeTrees = true;
-    private boolean placeDecorations = true;
 
     private Camera camera;
     private int spawnX, spawnZ;
@@ -74,9 +72,9 @@ public class TerrainGenerator implements IWorldGenerator {
             }
         }
 
-        if(placeDecorations)
+        if(game.getConfig().placeDecorations())
             placeDecorations();
-        if(placeTrees)
+        if(game.getConfig().placeTrees())
             placeTrees();
 
         if(camera != null) {
@@ -173,14 +171,6 @@ public class TerrainGenerator implements IWorldGenerator {
     public TerrainGenerator setSeed(int seed) {
         this.seed = seed;
         return this;
-    }
-
-    public void setPlaceTrees(boolean placeTrees) {
-        this.placeTrees = placeTrees;
-    }
-
-    public void setPlaceDecorations(boolean placeDecorations) {
-        this.placeDecorations = placeDecorations;
     }
 
 }
