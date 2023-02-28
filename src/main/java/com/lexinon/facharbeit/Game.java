@@ -185,10 +185,10 @@ public class Game {
 
         octree = new TerrainGenerator()
                 .setWorldSize(1024, 1024)
-                .setWaterHeight(64)
-                .setSeed(234)
+                .setWaterHeight(82)
+                .setSeed(236)
+                .setCameraToTerrainHeight(0, 0, camera)
                 .generate(4, 6, this);
-        camera.setEye(new Vector3f(0, 64, 0));
 
         voxelTextureAtlas = new VoxelTextureAtlas(game);
         screenTextureAtlas = new ScreenTextureAtlas(game);

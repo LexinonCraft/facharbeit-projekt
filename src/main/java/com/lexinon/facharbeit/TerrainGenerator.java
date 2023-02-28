@@ -1,5 +1,6 @@
 package com.lexinon.facharbeit;
 
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class TerrainGenerator implements IWorldGenerator {
@@ -18,6 +19,9 @@ public class TerrainGenerator implements IWorldGenerator {
     private boolean placeTrees = true;
     private boolean placeDecorations = true;
 
+    private Camera camera;
+    private int spawnX, spawnZ;
+
     public TerrainGenerator() {}
 
     @Override
@@ -29,11 +33,11 @@ public class TerrainGenerator implements IWorldGenerator {
         maxSideLength = Math.max(worldWidthX, worldWidthZ);
 
         heightMapGenerator = new PerlinNoiseGenerator(seed + Util.hash(0), maxSideLength)
-                .noise(2f, 4f)
-                .noise(4f, 2f)
-                .noise(8f, 1f)
-                .noise(16f, 0.5f)
-                .noise(32f, 0.25f);
+                .noise(2f * maxSideLength / 1024f, 4f)
+                .noise(4f * maxSideLength / 1024f, 2f)
+                .noise(8f * maxSideLength / 1024f, 1f)
+                .noise(16f * maxSideLength / 1024f, 0.5f)
+                .noise(32f * maxSideLength / 1024f, 0.25f);
 
         heightMapGenerator.normalizeTexture();
         heightMap = heightMapGenerator.getTexture();
@@ -75,6 +79,11 @@ public class TerrainGenerator implements IWorldGenerator {
         if(placeTrees)
             placeTrees();
 
+        if(camera != null) {
+            int spawnTerrainHeight = (int) heightMap[Util.getIndexByPos(spawnX + maxSideLength / 2, spawnZ + maxSideLength / 2, maxSideLength)] - worldHeight / 2;
+            camera.setEye(new Vector3f(spawnX, spawnTerrainHeight + 15, spawnZ));
+        }
+
         return octree;
     }
 
@@ -83,7 +92,7 @@ public class TerrainGenerator implements IWorldGenerator {
             int x = Math.abs(Util.hash(1 + Util.hash(i))) % maxSideLength;
             int z = Math.abs(Util.hash(2 + Util.hash(i))) % maxSideLength;
             int terrainHeight = (int) heightMap[Util.getIndexByPos(x, z, maxSideLength)];
-            if(terrainHeight <= worldHeight)
+            if(terrainHeight <= waterHeight)
                 continue;
             octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.LOG.getId());
             octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2 + 1, z - maxSideLength / 2), Material.LOG.getId());
@@ -119,7 +128,7 @@ public class TerrainGenerator implements IWorldGenerator {
             int x = Math.abs(Util.hash(3 + Util.hash(i))) % maxSideLength;
             int z = Math.abs(Util.hash(4 + Util.hash(i))) % maxSideLength;
             int terrainHeight = (int) heightMap[Util.getIndexByPos(x, z, maxSideLength)];
-            if(terrainHeight <= worldHeight)
+            if(terrainHeight <= waterHeight)
                 continue;
             int type = Math.abs(Util.hash(5 + Util.hash(i))) % 8;
             switch(type) {
@@ -140,6 +149,14 @@ public class TerrainGenerator implements IWorldGenerator {
                 case 7 -> octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.TANK.getId());
             }
         }
+    }
+
+    @Override
+    public TerrainGenerator setCameraToTerrainHeight(int x, int z, Camera camera) {
+        this.camera = camera;
+        spawnX = x;
+        spawnZ = z;
+        return this;
     }
 
     public TerrainGenerator setWorldSize(int worldWidthX, int worldWidthZ) {

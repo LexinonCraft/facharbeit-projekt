@@ -58,7 +58,7 @@ public class Octree implements IOctreeParentNode {
 
     public boolean doOcclusionTest() {
         return true;
-    }
+    } // TODO
 
     @Override
     public void incrementNonEmptySubtreesCount() {
