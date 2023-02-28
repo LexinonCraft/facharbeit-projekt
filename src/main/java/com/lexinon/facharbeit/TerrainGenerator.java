@@ -15,6 +15,8 @@ public class TerrainGenerator implements IWorldGenerator {
     private final int worldHeight = 64;
     private int waterHeight = 64;
     private int seed = 0;
+    private boolean placeTrees = true;
+    private boolean placeDecorations = true;
 
     public TerrainGenerator() {}
 
@@ -41,7 +43,7 @@ public class TerrainGenerator implements IWorldGenerator {
         }
 
         layerMapGenerator = new PerlinNoiseGenerator(seed + Util.hash(1), maxSideLength)
-                .noise(32f, 1f);
+                .noise(16f, 1f);
 
         layerMapGenerator.normalizeTexture();
         layerMap = layerMapGenerator.getTexture();
@@ -58,7 +60,7 @@ public class TerrainGenerator implements IWorldGenerator {
                if(y >= waterHeight + 10 * layerMap[i]) {
                     if(y == terrainHeight)
                         octree.addVoxel(new Vector3i(x - worldWidthX / 2, y - worldHeight / 2, z - worldWidthZ / 2), Material.GRASS.getId());
-                    else if(y > terrainHeight - 3)
+                    else if(y > terrainHeight - 2)
                         octree.addVoxel(new Vector3i(x - worldWidthX / 2, y - worldHeight / 2, z - worldWidthZ / 2), Material.DIRT.getId());
                     else
                         octree.addVoxel(new Vector3i(x - worldWidthX / 2, y - worldHeight / 2, z - worldWidthZ / 2), Material.TEST_STONE.getId());
@@ -68,6 +70,15 @@ public class TerrainGenerator implements IWorldGenerator {
             }
         }
 
+        if(placeDecorations)
+            placeDecorations();
+        if(placeTrees)
+            placeTrees();
+
+        return octree;
+    }
+
+    private void placeTrees() {
         for(int i = 0; i < maxSideLength * maxSideLength / 32; i++) {
             int x = Math.abs(Util.hash(1 + Util.hash(i))) % maxSideLength;
             int z = Math.abs(Util.hash(2 + Util.hash(i))) % maxSideLength;
@@ -78,6 +89,7 @@ public class TerrainGenerator implements IWorldGenerator {
             octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2 + 1, z - maxSideLength / 2), Material.LOG.getId());
             octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2 + 2, z - maxSideLength / 2), Material.LOG.getId());
             octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2 + 3, z - maxSideLength / 2), Material.LOG.getId());
+            octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2 + 4, z - maxSideLength / 2), Material.LOG.getId());
 
 
             octree.addVoxel(new Vector3i(x - maxSideLength / 2 + 1, terrainHeight + 1 - worldHeight / 2 + 3, z - maxSideLength / 2), Material.LEAVES.getId());
@@ -100,8 +112,34 @@ public class TerrainGenerator implements IWorldGenerator {
 
             octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2 + 5, z - maxSideLength / 2), Material.LEAVES.getId());
         }
+    }
 
-        return octree;
+    private void placeDecorations() {
+        for(int i = 0; i < maxSideLength * maxSideLength / 512; i++) {
+            int x = Math.abs(Util.hash(3 + Util.hash(i))) % maxSideLength;
+            int z = Math.abs(Util.hash(4 + Util.hash(i))) % maxSideLength;
+            int terrainHeight = (int) heightMap[Util.getIndexByPos(x, z, maxSideLength)];
+            if(terrainHeight <= worldHeight)
+                continue;
+            int type = Math.abs(Util.hash(5 + Util.hash(i))) % 8;
+            switch(type) {
+                case 0 -> {
+                    octree.removeVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight - worldHeight / 2, z - maxSideLength / 2));
+                    octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight - worldHeight / 2, z - maxSideLength / 2), Material.FARMLAND.getId());
+                }
+                case 1 -> octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.HAY.getId());
+                case 2 -> {
+                    octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.CACTUS.getId());
+                    octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 2 - worldHeight / 2, z - maxSideLength / 2), Material.CACTUS.getId());
+                    octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 3 - worldHeight / 2, z - maxSideLength / 2), Material.CACTUS.getId());
+                }
+                case 3 -> octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.CRATE.getId());
+                case 4 -> octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.CAKE.getId());
+                case 5 -> octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.PUMPKIN.getId());
+                case 6 -> octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.VINES.getId());
+                case 7 -> octree.addVoxel(new Vector3i(x - maxSideLength / 2, terrainHeight + 1 - worldHeight / 2, z - maxSideLength / 2), Material.TANK.getId());
+            }
+        }
     }
 
     public TerrainGenerator setWorldSize(int worldWidthX, int worldWidthZ) {
@@ -119,4 +157,13 @@ public class TerrainGenerator implements IWorldGenerator {
         this.seed = seed;
         return this;
     }
+
+    public void setPlaceTrees(boolean placeTrees) {
+        this.placeTrees = placeTrees;
+    }
+
+    public void setPlaceDecorations(boolean placeDecorations) {
+        this.placeDecorations = placeDecorations;
+    }
+
 }
