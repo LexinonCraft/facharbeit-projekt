@@ -21,6 +21,8 @@ public class Game {
 
     private Window window;
     public Camera camera;
+    private Config config;
+
     private VoxelTextureAtlas voxelTextureAtlas;
     private ScreenTextureAtlas screenTextureAtlas;
 
@@ -36,7 +38,8 @@ public class Game {
 
     private float movementSpeed = 1f;
     private float selectionDistance = 5f;
-    private boolean hideOverlay = false;
+    private boolean hideSelectionBox = false;
+    private boolean hideOverlay = true;
 
     private long lastTime;
     private int destroyCooldown = 0;
@@ -61,6 +64,8 @@ public class Game {
     }
 
     private void init() {
+        config = Config.read(new File("config.txt"));
+
         window = new Window(800, 600, "Facharbeit Projekt");
         camera = new Camera();
         camera.setEye(new Vector3f(0.5f, 1f, 1f));
@@ -183,12 +188,17 @@ public class Game {
 
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
-        octree = new TerrainGenerator()
-                .setWorldSize(1024, 1024)
-                .setWaterHeight(82)
-                .setSeed(236)
-                .setCameraToTerrainHeight(0, 0, camera)
-                .generate(4, 6, this);
+        IWorldGenerator worldGenerator = switch(config.getWorldType()) {
+            case TERRAIN -> new TerrainGenerator()
+                    .setWorldSize(1 << (config.getDepth() + config.getEdgeLengthExponent()), 1 << (config.getDepth() + config.getEdgeLengthExponent()))
+                    .setWaterHeight(82)
+                    .setSeed(config.getSeed()); //236
+            case EMPTY -> new EmptyWorldGenerator();
+            default -> null;
+        };
+
+        octree = worldGenerator.setCameraToTerrainHeight(0, 0, camera)
+                .generate(config.getDepth(), config.getEdgeLengthExponent(), this);
 
         /*octree = new EmptyWorldGenerator()
                 .setCameraToTerrainHeight(0, 0, camera)
@@ -240,7 +250,7 @@ public class Game {
                 ).mul(delta / 1_000_000_000f * 5));
 
         Vector3f lookingAt = new Vector3f(camera.getEye()).add(new Vector3f((float) (Math.sin(yaw) * Math.cos(pitch)), (float) Math.sin(pitch), -(float) (Math.cos(yaw) * Math.cos(pitch))).normalize().mul(selectionDistance));
-        Vector3i selectedVoxel = new Vector3i((int) lookingAt.x, (int) lookingAt.y, (int) lookingAt.z);
+        Vector3i selectedVoxel = new Vector3i((int) Math.floor(lookingAt.x), (int) Math.floor(lookingAt.y), (int) Math.floor(lookingAt.z));
 
         if(destroyCooldown > delta)
             destroyCooldown -= delta;
@@ -295,6 +305,8 @@ public class Game {
         octree.updateMeshs();
 
         if(window.isKeyF1Clicked())
+            hideSelectionBox = !hideSelectionBox;
+        if(window.isKeyF3Clicked())
             hideOverlay = !hideOverlay;
 
         glClearColor(0.74609375f, 0.9140625f, 0.95703125f, 1f);
@@ -302,7 +314,7 @@ public class Game {
         glEnable(GL_DEPTH_TEST);
         octree.render();
 
-        if(!hideOverlay)
+        if(!hideSelectionBox)
             boxMesh.draw(selectedVoxel, this);
 
         glDisable(GL_DEPTH_TEST);
@@ -362,15 +374,19 @@ public class Game {
         BufferedImage image = new BufferedImage(window.getFramebufferWidth(), window.getFramebufferHeight(), BufferedImage.TYPE_INT_ARGB);
         for(int i = 0; i < window.getFramebufferWidth() * window.getFramebufferHeight(); i++) {
             image.setRGB(i % window.getFramebufferWidth(), window.getFramebufferHeight() - 1 - i / window.getFramebufferWidth(),
-                    ((((int) buffer.get(3 * i)) << 16) & 0x00FF0000) + (((((int) buffer.get(3 * i + 1)) << 8) & 0x0000FF00) + ((((int) buffer.get(3 * i + 2)) << 0) & 0x000000FF)) + 0xFF000000);
+                    ((((int) buffer.get(3 * i)) << 16) & 0x00FF0000) + (((((int) buffer.get(3 * i + 1)) << 8) & 0x0000FF00) + (((int) buffer.get(3 * i + 2)) & 0x000000FF)) + 0xFF000000);
         }
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss");
         Date date = new Date();
         try {
+            new File("screenshots").mkdir();
             ImageIO.write(image, "png", new File(String.format("screenshots/Screenshot-%s.png", formatter.format(date))));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public Config getConfig() {
+        return config;
+    }
 }

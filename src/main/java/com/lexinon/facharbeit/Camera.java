@@ -19,7 +19,6 @@ public class Camera {
         yaw = 0f;
         pitch = 0f;
         fov = 90;
-        aspectRatio = 1;
         zNear = 0.1f;
         zFar = 1024f;
         updateViewProjectionMatrix();

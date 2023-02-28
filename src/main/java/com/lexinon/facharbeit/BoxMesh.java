@@ -57,13 +57,11 @@ public class BoxMesh {
         glLineWidth(5);
         glBindVertexArray(vao);
 
-        Matrix4f modelViewProjectionMatrix = game.camera.getViewProjectionMatrix()
+        Matrix4f modelViewProjectionMatrix = game.camera.getModelViewProjectionMatrix().set(game.camera.getViewProjectionMatrix())
                 .translate(pos.x, pos.y, pos.z);
 
         glUniformMatrix4fv(game.boxShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_LINE_STRIP, 0, 16);
-
-        modelViewProjectionMatrix.translate(-pos.x, -pos.y, -pos.z);
     }
 
     public void delete() {
