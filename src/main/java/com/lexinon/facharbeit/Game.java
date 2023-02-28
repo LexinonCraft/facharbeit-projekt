@@ -2,6 +2,16 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+import org.lwjgl.BufferUtils;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL20C.*;
@@ -124,7 +134,8 @@ public class Game {
 
         testMesh = meshBuilder.build();*/
 
-        octree = new Octree(6, 4, this);
+        //octree = new Octree(6, 4, this);
+
         //octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
         //octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
         //octree.addVoxel(new Vector3i(1, 1, 0), Material.CRATE.getId());
@@ -173,28 +184,12 @@ public class Game {
 
         //octree.removeVoxel(new Vector3i(0, 0, 0));
 
-        noiseGenerator = new PerlinNoiseGenerator(1, 512);
-        noiseGenerator.noise(4, 2f)
-                .noise(8f, 1f)
-                .noise(16f, 0.5f)
-                .noise(32f, 0.25f);
-
-        noiseGenerator.normalizeTexture();
-        float[] heightMap = noiseGenerator.getTexture();
-        for(int i = 0; i < heightMap.length; i++) {
-            int terrainHeight = (int) (Math.pow(heightMap[i] * 1.2 + 1.2, 2) * 50);
-            int x = noiseGenerator.getXPosByIndex(i, 512);
-            int z = noiseGenerator.getYPosByIndex(i, 512);
-            if(terrainHeight < 64)
-                for (int y = 64; y > terrainHeight; y--) {
-                    octree.addVoxel(new Vector3i(x, y, z), Material.WATER.getId());
-                }
-            octree.addVoxel(new Vector3i(x, terrainHeight, z), Material.GRASS.getId());
-            for(int y = terrainHeight - 1; y >= 0 && y >= terrainHeight - 3; y--)
-                octree.addVoxel(new Vector3i(x, y, z), Material.DIRT.getId());
-            for(int y = terrainHeight - 3; y >= 0; y--)
-                octree.addVoxel(new Vector3i(x, y, z), Material.TEST_STONE.getId());
-        }
+        octree = new TerrainGenerator()
+                .setWorldSize(1024, 1024)
+                .setWaterHeight(64)
+                .setSeed(234)
+                .generate(6, 6, this);
+        camera.setEye(new Vector3f(0, 64, 0));
 
         voxelTextureAtlas = new VoxelTextureAtlas(game);
         screenTextureAtlas = new ScreenTextureAtlas(game);
@@ -325,6 +320,9 @@ public class Game {
 
         window.update();
 
+        if(window.isKeyF2Clicked())
+            takeScreenshot();
+
         if(window.shouldClose())
             shouldTerminate = true;
     }
@@ -351,6 +349,23 @@ public class Game {
 
     public Window getWindow() {
         return window;
+    }
+
+    private void takeScreenshot() {
+        ByteBuffer buffer = BufferUtils.createByteBuffer(3 * window.getFramebufferWidth() * window.getFramebufferHeight());
+        glReadPixels(0, 0, window.getFramebufferWidth(), window.getFramebufferHeight(), GL_RGB, GL_UNSIGNED_BYTE, buffer);
+        BufferedImage image = new BufferedImage(window.getFramebufferWidth(), window.getFramebufferHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i = 0; i < window.getFramebufferWidth() * window.getFramebufferHeight(); i++) {
+            image.setRGB(i % window.getFramebufferWidth(), window.getFramebufferHeight() - 1 - i / window.getFramebufferWidth(),
+                    ((((int) buffer.get(3 * i)) << 16) & 0x00FF0000) + (((((int) buffer.get(3 * i + 1)) << 8) & 0x0000FF00) + ((((int) buffer.get(3 * i + 2)) << 0) & 0x000000FF)) + 0xFF000000);
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss");
+        Date date = new Date();
+        try {
+            ImageIO.write(image, "png", new File(String.format("Screenshot-%s.png", formatter.format(date))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

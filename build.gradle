@@ -28,9 +28,7 @@ tasks.getByName('processResources') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-File runningDir = new File('run/')
-runningDir.mkdirs()
-tasks.run.workingDir = runningDir
+tasks.run.workingDir('run')
 
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:

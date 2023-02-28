@@ -44,6 +44,7 @@ public class Window {
     private boolean rightMouseButtonPressed = false;
 
     private boolean keyF1Clicked = false;
+    private boolean keyF2Clicked = false;
 
     public Window(int windowedWidth, int windowedHeight, String title) {
         this.windowedWidth = windowedWidth;
@@ -112,6 +113,7 @@ public class Window {
 
     public void update() {
         keyF1Clicked = false;
+        keyF2Clicked = false;
 
         glfwSwapBuffers(handle);
         glfwPollEvents();
@@ -274,6 +276,10 @@ public class Window {
         return keyF1Clicked;
     }
 
+    public boolean isKeyF2Clicked() {
+        return keyF2Clicked;
+    }
+
     public double getScroll() {
         return lastScroll;
     }
@@ -347,6 +353,10 @@ public class Window {
             case GLFW_KEY_F1 -> {
                 if (action == GLFW_PRESS)
                     keyF1Clicked = true;
+            }
+            case GLFW_KEY_F2 -> {
+                if (action == GLFW_PRESS)
+                    keyF2Clicked = true;
             }
         }
     }

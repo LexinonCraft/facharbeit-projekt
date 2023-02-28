@@ -21,7 +21,7 @@ public class Camera {
         fov = 90;
         aspectRatio = 1;
         zNear = 0.1f;
-        zFar = 512f;
+        zFar = 1024f;
         updateViewProjectionMatrix();
     }
 

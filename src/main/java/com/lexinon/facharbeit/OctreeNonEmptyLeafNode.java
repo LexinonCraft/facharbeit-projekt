@@ -30,6 +30,8 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         Vector3i newPos = new Vector3i((pos.x >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
                 (pos.y >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1,
                 (pos.z >> (32 - edgeLengthExponent)) & (1 << edgeLengthExponent) - 1);
+        if(content[getIndexByPos(newPos)] != 0)
+            return this;
         if(content[getIndexByPos(newPos)] == 0)
             nonEmptyVoxels++;
         content[getIndexByPos(newPos)] = material;

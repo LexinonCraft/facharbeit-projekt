@@ -43,10 +43,10 @@ public class PerlinNoiseGenerator {
             for(int y = 0; y < textureSideLength; y++) {
                 int gridPointX = (int) (x / gridPointDistance);
                 int gridPointY = (int) (y / gridPointDistance);
-                Vector2f gradient1 = gradients[getIndexByPos(gridPointX, gridPointY, amountGridPoints)];
-                Vector2f gradient2 = gradients[getIndexByPos(gridPointX + 1, gridPointY, amountGridPoints)];
-                Vector2f gradient3 = gradients[getIndexByPos(gridPointX + 1, gridPointY + 1, amountGridPoints)];
-                Vector2f gradient4 = gradients[getIndexByPos(gridPointX, gridPointY + 1, amountGridPoints)];
+                Vector2f gradient1 = gradients[Util.getIndexByPos(gridPointX, gridPointY, amountGridPoints)];
+                Vector2f gradient2 = gradients[Util.getIndexByPos(gridPointX + 1, gridPointY, amountGridPoints)];
+                Vector2f gradient3 = gradients[Util.getIndexByPos(gridPointX + 1, gridPointY + 1, amountGridPoints)];
+                Vector2f gradient4 = gradients[Util.getIndexByPos(gridPointX, gridPointY + 1, amountGridPoints)];
                 float relX = x / gridPointDistance - gridPointX;
                 float relY = y / gridPointDistance - gridPointY;
 
@@ -59,7 +59,7 @@ public class PerlinNoiseGenerator {
                 float f1 = s4 * interpolationFunction(1 - relX) + s3 * interpolationFunction(relX);
                 float fRes = f0 * interpolationFunction(1 - relY) + f1 * interpolationFunction(relY);
 
-                texture[getIndexByPos(x, y, textureSideLength)] += fRes * weight;
+                texture[Util.getIndexByPos(x, y, textureSideLength)] += fRes * weight;
             }
         }
         totalWeight += weight;
@@ -67,28 +67,12 @@ public class PerlinNoiseGenerator {
         return this;
     }
 
-    private int hashBackbone(int x) {
-        byte[] bytes = md.digest(new byte[]{(byte) ((x >> 24) & 0x000000FF), (byte) ((x >> 16) & 0x000000FF), (byte) ((x >> 8) & 0x000000FF), (byte) (x & 0x000000FF)});
-        return (bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3];
-    }
-
     private int hash(int x) {
-        return hashBackbone(x + hashBackbone(seed + hashBackbone(subSeed)));
+        return Util.hash(x + Util.hash(seed + Util.hash(subSeed)));
     }
 
     private float interpolationFunction(float a) {
         return a * a * a * (6 * a * a - 15 * a + 10);
-    }
-
-    public int getIndexByPos(int x, int y, int length) {
-        return x + y * length;
-    }
-
-    public int getXPosByIndex(int i, int length) {
-        return i % length;
-    }
-    public int getYPosByIndex(int i, int length) {
-        return i / length;
     }
 
     private static int ceilDiv(float a, float b) {
