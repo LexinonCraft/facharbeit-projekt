@@ -14,7 +14,7 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
     private final Mesh mesh = new Mesh();
 
     public OctreeNonEmptyLeafNode(Octree octree) {
-        edgeLengthExponent = octree.getEdgeLengthExponent();
+        edgeLengthExponent = octree.getLeafNodeArrayEdgeLengthExponent();
         edgeLength = 1 << edgeLengthExponent;
         edgeLengthSquared = edgeLength * edgeLength;
         content = new short[edgeLength * edgeLength * edgeLength];

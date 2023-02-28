@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -188,7 +187,7 @@ public class Game {
                 .setWorldSize(1024, 1024)
                 .setWaterHeight(64)
                 .setSeed(234)
-                .generate(6, 6, this);
+                .generate(4, 6, this);
         camera.setEye(new Vector3f(0, 64, 0));
 
         voxelTextureAtlas = new VoxelTextureAtlas(game);
@@ -198,7 +197,7 @@ public class Game {
 
         overlay = new Overlay(this);
 
-        meshBuilder = new MeshBuilder(6 * (1 << octree.getEdgeLengthExponent()) * (1 << octree.getEdgeLengthExponent()) * (1 << octree.getEdgeLengthExponent()));
+        meshBuilder = new MeshBuilder(6 * (1 << octree.getLeafNodeArrayEdgeLengthExponent()) * (1 << octree.getLeafNodeArrayEdgeLengthExponent()) * (1 << octree.getLeafNodeArrayEdgeLengthExponent()));
 
         glEnable(GL_POLYGON_SMOOTH);
         glEnable(GL_MULTISAMPLE);
