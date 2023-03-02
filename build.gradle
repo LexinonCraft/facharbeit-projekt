@@ -52,25 +52,42 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    includeInJar
+}
+
 dependencies {
-    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    includeInJar platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
-    implementation "org.lwjgl:lwjgl"
-    implementation "org.lwjgl:lwjgl-assimp"
-    implementation "org.lwjgl:lwjgl-glfw"
-    implementation "org.lwjgl:lwjgl-openal"
-    implementation "org.lwjgl:lwjgl-opengl"
-    implementation "org.lwjgl:lwjgl-stb"
-    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
-    implementation "org.joml:joml:${jomlVersion}"
+    includeInJar "org.lwjgl:lwjgl"
+    includeInJar "org.lwjgl:lwjgl-assimp"
+    includeInJar "org.lwjgl:lwjgl-glfw"
+    includeInJar "org.lwjgl:lwjgl-openal"
+    includeInJar "org.lwjgl:lwjgl-opengl"
+    includeInJar "org.lwjgl:lwjgl-stb"
+    includeInJar "org.lwjgl:lwjgl::$lwjglNatives"
+    includeInJar "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+    includeInJar "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    includeInJar "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    includeInJar "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    includeInJar "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    includeInJar "org.joml:joml:${jomlVersion}"
 
-    implementation "it.unimi.dsi:fastutil:8.5.11"
-    implementation "org.openjdk.jol:jol-core:0.10"
+    includeInJar "it.unimi.dsi:fastutil:8.5.11"
+    includeInJar "org.openjdk.jol:jol-core:0.10"
+
+    configurations.compileClasspath.extendsFrom(configurations.includeInJar)
+    configurations.runtimeClasspath.extendsFrom(configurations.includeInJar)
 }
 
 application.mainClass = 'com.lexinon.facharbeit.Main'
+
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+    from {
+        configurations.includeInJar.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF', 'META-INF/**'
+}
