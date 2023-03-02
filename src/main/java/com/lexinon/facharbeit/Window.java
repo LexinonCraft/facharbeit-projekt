@@ -48,6 +48,8 @@ public class Window {
     private boolean keyF2Clicked = false;
     private boolean keyF3Clicked = false;
 
+    private int selectedNum = -1;
+
     public Window(int windowedWidth, int windowedHeight, String title) {
         this.windowedWidth = windowedWidth;
         this.windowedHeight = windowedHeight;
@@ -117,6 +119,8 @@ public class Window {
         keyF1Clicked = false;
         keyF2Clicked = false;
         keyF3Clicked = false;
+
+        selectedNum = -1;
 
         glfwSwapBuffers(handle);
         glfwPollEvents();
@@ -291,6 +295,10 @@ public class Window {
         return keyF3Clicked;
     }
 
+    public int getSelectedNum() {
+        return selectedNum;
+    }
+
     public double getScroll() {
         return lastScroll;
     }
@@ -374,6 +382,51 @@ public class Window {
             case GLFW_KEY_F3 -> {
                 if (action == GLFW_PRESS)
                     keyF3Clicked = true;
+            }
+            case GLFW_KEY_1 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 9 : 0;
+                }
+            }
+            case GLFW_KEY_2 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 10 : 1;
+                }
+            }
+            case GLFW_KEY_3 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 11 : 2;
+                }
+            }
+            case GLFW_KEY_4 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 12 : 3;
+                }
+            }
+            case GLFW_KEY_5 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 13 : 4;
+                }
+            }
+            case GLFW_KEY_6 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 14 : 5;
+                }
+            }
+            case GLFW_KEY_7 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 15 : 6;
+                }
+            }
+            case GLFW_KEY_8 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 16 : 7;
+                }
+            }
+            case GLFW_KEY_9 -> {
+                if(action == GLFW_PRESS) {
+                    selectedNum = ctrlPressed ? 17 : 8;
+                }
             }
         }
     }

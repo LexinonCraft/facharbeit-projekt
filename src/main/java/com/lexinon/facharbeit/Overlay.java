@@ -70,7 +70,10 @@ public class Overlay {
             case FLAT -> "Flat";
         });
 
+        writeLineRb("https://github.com/LexinonCraft/facharbeit-projekt");
         writeLineRb("(C) Tiggemann 2023");
+
+        writeLineLb("Selected Material:" + game.getSelectedMaterial().getName());
     }
 
     private void writeLineLt(String text) {

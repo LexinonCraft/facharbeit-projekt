@@ -65,7 +65,7 @@ public class TerrainGenerator implements IWorldGenerator {
                     else if(y > terrainHeight - 2)
                         octree.addVoxel(new Vector3i(x - worldWidthX / 2, y - worldHeight / 2, z - worldWidthZ / 2), Material.DIRT.getId());
                     else
-                        octree.addVoxel(new Vector3i(x - worldWidthX / 2, y - worldHeight / 2, z - worldWidthZ / 2), Material.TEST_STONE.getId());
+                        octree.addVoxel(new Vector3i(x - worldWidthX / 2, y - worldHeight / 2, z - worldWidthZ / 2), Material.STONE.getId());
                 } else {
                     octree.addVoxel(new Vector3i(x - worldWidthX / 2, y - worldHeight / 2, z - worldWidthZ / 2), Material.SAND.getId());
                 }

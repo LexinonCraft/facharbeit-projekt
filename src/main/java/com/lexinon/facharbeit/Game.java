@@ -39,6 +39,7 @@ public class Game {
 
     private float movementSpeed = 1f;
     private float selectionDistance = 5f;
+    private Material selectedMaterial = Material.CRATE;
     private boolean hideSelectionBox = false;
     private boolean hideOverlay = true;
 
@@ -266,7 +267,7 @@ public class Game {
             destroyCooldown = 300_000_000;
         }
         if(placeCooldown == 0 && window.isRightMouseButtonPressed()) {
-            octree.addVoxel(selectedVoxel, Material.CRATE.getId());
+            octree.addVoxel(selectedVoxel, selectedMaterial.getId());
             placeCooldown = 300_000_000;
         }
 
@@ -297,6 +298,28 @@ public class Game {
                 selectionDistance = Math.max(selectionDistance, 0);
             }
         }
+
+        selectedMaterial = switch(window.getSelectedNum()) {
+            case 0 -> Material.CRATE;
+            case 1 -> Material.GRASS;
+            case 2 -> Material.DIRT;
+            case 3 -> Material.STONE;
+            case 4 -> Material.LOG;
+            case 5 -> Material.LEAVES;
+            case 6 -> Material.WATER;
+            case 7 -> Material.SAND;
+            case 8 -> Material.FARMLAND;
+            case 9 -> Material.HAY;
+            case 10 -> Material.CACTUS;
+            case 11 -> Material.CAKE;
+            case 12 -> Material.PUMPKIN;
+            case 13 -> Material.VINES;
+            case 14 -> Material.TANK;
+            case 15 -> Material.PLANKS;
+            case 16 -> Material.BRICKS;
+            case 17 -> Material.RED_BRICKS;
+            default -> selectedMaterial;
+        };
 
         camera.setAspectRatio((float) window.getFramebufferWidth() / window.getFramebufferHeight());
 
@@ -389,4 +412,9 @@ public class Game {
     public Config getConfig() {
         return config;
     }
+
+    public Material getSelectedMaterial() {
+        return selectedMaterial;
+    }
+
 }
