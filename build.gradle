@@ -28,6 +28,7 @@ tasks.getByName('processResources') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+mkdir('run')
 tasks.run.workingDir('run')
 
 switch (OperatingSystem.current()) {
