@@ -101,4 +101,5 @@ public class Config {
     public float getBenchmarkDuration() {
         return benchmarkDuration;
     }
+
 }

@@ -190,8 +190,7 @@ public class Game {
 
         IWorldGenerator worldGenerator = switch(config.getWorldType()) {
             case TERRAIN -> new TerrainGenerator()
-                    .setWorldSize(1 << (config.getDepth() + config.getEdgeLengthExponent()), 1 << (config.getDepth() + config.getEdgeLengthExponent()))
-                    .setWaterHeight(82)
+                    .setWorldSize(1 << (config.getDepth() + config.getEdgeLengthExponent()))
                     .setSeed(config.getSeed()); //236
             case EMPTY -> new EmptyWorldGenerator();
             case FLAT -> new FlatWorldGenerator()
