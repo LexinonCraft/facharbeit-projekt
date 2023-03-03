@@ -23,9 +23,9 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
     @Override
     public void render(int originX, int originY, int originZ, int volumeEdgeLength, Octree octree) {
-        Metrics.switchBenchmarkMode(BenchmarkMode.DRAW_CALL);
+        Metrics.switchBenchmarkMode(BenchmarkProfile.DRAW_CALL);
         mesh.draw(originX, originY, originZ, octree.getGame());
-        Metrics.switchBenchmarkMode(BenchmarkMode.OTHER);
+        Metrics.switchBenchmarkMode(BenchmarkProfile.OTHER);
     }
 
     @Override

@@ -69,6 +69,14 @@ public class Overlay {
             case EMPTY -> "Empty";
             case FLAT -> "Flat";
         });
+        writeLineLt("");
+        writeLineLt(switch(game.getBenchmarkMode()) {
+            case NONE -> "Currently no running benchmark";
+            case WAITING_LIMITED -> "Limited benchmark: waiting for action";
+            case WAITING_UNLIMITED -> "Unlimited benchmark: waiting for action";
+            case ACTIVE_LIMITED -> "Limited benchmark running...";
+            case ACTIVE_UNLIMITED -> "Unlimited benchmark running...";
+        });
 
         writeLineRb("https://github.com/LexinonCraft/facharbeit-projekt");
         writeLineRb("(C) Tiggemann 2023");

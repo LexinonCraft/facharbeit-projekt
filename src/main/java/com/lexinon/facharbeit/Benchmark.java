@@ -21,7 +21,7 @@ public class Benchmark {
     private float[] currentFrameTimesArray = new float[FRAME_TIME_VALUES_PER_LIST_ENTRY];
     private int currentFrameTimesArrayIndex = 0;
 
-    private BenchmarkMode benchmarkMode = BenchmarkMode.OTHER;
+    private BenchmarkProfile benchmarkProfile = BenchmarkProfile.OTHER;
     private long lastTime;
     private long
             timeTraversingTree,
@@ -54,21 +54,21 @@ public class Benchmark {
         return duration >= 0 && timeElapsed > duration;
     }
 
-    public void switchMode(BenchmarkMode newMode) {
+    public void switchMode(BenchmarkProfile newProfile) {
         long currentTime = System.nanoTime();
         long delta = currentTime - lastTime;
 
-        switch(benchmarkMode) {
+        switch(benchmarkProfile) {
             case TRAVERSING_TREE -> timeTraversingTree += delta;
             case DRAW_CALL -> timeDrawCall += delta;
         }
 
-        benchmarkMode = newMode;
+        benchmarkProfile = newProfile;
         lastTime = currentTime;
     }
 
     public void end(long innerOctreeNodes, long emptyOctreeLeafNodes, long voxelArrays, long nonEmptyVoxels, long triangles) {
-        switchMode(BenchmarkMode.OTHER);
+        switchMode(BenchmarkProfile.OTHER);
         if(currentFrameTimesArrayIndex != 0)
             frameTimes.add(currentFrameTimesArray);
 

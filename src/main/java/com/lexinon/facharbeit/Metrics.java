@@ -118,9 +118,13 @@ public class Metrics {
         benchmark = null;
     }
 
-    public static void switchBenchmarkMode(BenchmarkMode mode) {
+    public static void switchBenchmarkMode(BenchmarkProfile mode) {
         if(benchmark != null)
             benchmark.switchMode(mode);
+    }
+
+    public static boolean isBenchmarkRunning() {
+        return benchmark != null;
     }
 
 }

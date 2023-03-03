@@ -3,7 +3,6 @@ package com.lexinon.facharbeit;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;
-import org.openjdk.jol.info.ClassLayout;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -34,6 +33,7 @@ public class Game {
     private PerlinNoiseGenerator noiseGenerator;
     private BoxMesh boxMesh;
     private Overlay overlay;
+    private BenchmarkMode benchmarkMode = BenchmarkMode.NONE;
 
     private MeshBuilder meshBuilder;
 
@@ -225,7 +225,36 @@ public class Game {
         Metrics.tick();
 
         if(window.isKeyF5Clicked())
-            Metrics.startBenchmark(window, config, 10);
+            switch(benchmarkMode) {
+                case NONE, WAITING_UNLIMITED -> {
+                    benchmarkMode = BenchmarkMode.WAITING_LIMITED;
+                }
+                case WAITING_LIMITED -> {
+                    Metrics.startBenchmark(window, config, config.getBenchmarkDuration());
+                    benchmarkMode = BenchmarkMode.ACTIVE_LIMITED;
+                }
+                case ACTIVE_LIMITED, ACTIVE_UNLIMITED -> {
+                    Metrics.endBenchmark();
+                    benchmarkMode = BenchmarkMode.NONE;
+                }
+            }
+        if(window.isKeyF6Clicked())
+            switch(benchmarkMode) {
+                case NONE, WAITING_LIMITED -> {
+                    benchmarkMode = BenchmarkMode.WAITING_UNLIMITED;
+                }
+                case WAITING_UNLIMITED -> {
+                    Metrics.startBenchmark(window, config);
+                    benchmarkMode = BenchmarkMode.ACTIVE_UNLIMITED;
+                }
+                case ACTIVE_LIMITED, ACTIVE_UNLIMITED -> {
+                    Metrics.endBenchmark();
+                    benchmarkMode = BenchmarkMode.NONE;
+                }
+            }
+
+        if(!Metrics.isBenchmarkRunning() && (benchmarkMode == BenchmarkMode.ACTIVE_LIMITED || benchmarkMode == BenchmarkMode.ACTIVE_UNLIMITED))
+            benchmarkMode = BenchmarkMode.NONE;
 
         long currentTime = System.nanoTime();
         long actualDelta = currentTime - lastTime;
@@ -270,10 +299,12 @@ public class Game {
         if(destroyCooldown == 0 && window.isLeftMouseButtonPressed()) {
             octree.removeVoxel(selectedVoxel);
             destroyCooldown = 300_000_000;
+            activateBenchmarkIfWaiting();
         }
         if(placeCooldown == 0 && window.isRightMouseButtonPressed()) {
             octree.addVoxel(selectedVoxel, selectedMaterial.getId());
             placeCooldown = 300_000_000;
+            activateBenchmarkIfWaiting();
         }
 
         if(!window.isLeftMouseButtonPressed())
@@ -422,4 +453,20 @@ public class Game {
         return selectedMaterial;
     }
 
+    public void activateBenchmarkIfWaiting() {
+        switch(benchmarkMode) {
+            case WAITING_LIMITED -> {
+                Metrics.startBenchmark(window, config, config.getBenchmarkDuration());
+                benchmarkMode = BenchmarkMode.ACTIVE_LIMITED;
+            }
+            case WAITING_UNLIMITED -> {
+                Metrics.startBenchmark(window, config);
+                benchmarkMode = BenchmarkMode.ACTIVE_UNLIMITED;
+            }
+        }
+    }
+
+    public BenchmarkMode getBenchmarkMode() {
+        return benchmarkMode;
+    }
 }

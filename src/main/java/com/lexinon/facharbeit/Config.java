@@ -16,6 +16,7 @@ public class Config {
     private int flatWorldHeight = 3;
     private boolean placeTrees = true;
     private boolean placeDecorations = true;
+    private float benchmarkDuration = 30;
 
     private Config() {
 
@@ -61,6 +62,8 @@ public class Config {
             placeTrees = !line.substring(12).equals("false");
         else if(line.startsWith("place-decorations="))
             placeDecorations = !line.substring(18).equals("false");
+        else if(line.startsWith("benchmark-duration="))
+            benchmarkDuration = Integer.parseInt(line.substring(19));
     }
 
     public boolean doOcclusionTest() {
@@ -95,4 +98,7 @@ public class Config {
         return placeDecorations;
     }
 
+    public float getBenchmarkDuration() {
+        return benchmarkDuration;
+    }
 }
