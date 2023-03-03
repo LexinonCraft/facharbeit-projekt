@@ -9,15 +9,17 @@ public class Metrics {
     public static final long NON_EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE = ClassLayout.parseClass(OctreeNonEmptyLeafNode.class).instanceSize();
     public static final long MESH_INSTANCE_SIZE = ClassLayout.parseClass(Mesh.class).instanceSize();
 
-    private static int numInnerOctreeNodes = 0;
-    private static int numEmptyOctreeLeafNotes = 0;
-    private static int numVoxelArrays = 0;
+    private static long numInnerOctreeNodes = 0;
+    private static long numEmptyOctreeLeafNodes = 0;
+    private static long numVoxelArrays = 0;
     private static long numNonEmptyVoxels = 0;
     private static long numTriangles = 0;
 
     private static float fps;
     private static int frameCounter;
     private static long lastFrameCounterReset;
+
+    private static Benchmark benchmark;
 
     public static void incrementNumInnerOctreeNodes() {
         numInnerOctreeNodes++;
@@ -28,11 +30,11 @@ public class Metrics {
     }
 
     public static void incrementNumEmptyOctreeLeafNodes() {
-        numEmptyOctreeLeafNotes++;
+        numEmptyOctreeLeafNodes++;
     }
 
     public static void decrementNumEmptyOctreeLeafNodes() {
-        numEmptyOctreeLeafNotes--;
+        numEmptyOctreeLeafNodes--;
     }
 
     public static void incrementNumVoxelArrays() {
@@ -63,15 +65,15 @@ public class Metrics {
         numTriangles -= num;
     }
 
-    public static int getNumInnerOctreeNodes() {
+    public static long getNumInnerOctreeNodes() {
         return numInnerOctreeNodes;
     }
 
-    public static int getNumEmptyOctreeLeafNotes() {
-        return numEmptyOctreeLeafNotes;
+    public static long getNumEmptyOctreeLeafNodes() {
+        return numEmptyOctreeLeafNodes;
     }
 
-    public static int getNumVoxelArrays() {
+    public static long getNumVoxelArrays() {
         return numVoxelArrays;
     }
 
@@ -94,6 +96,31 @@ public class Metrics {
             lastFrameCounterReset = System.nanoTime();
         }
         frameCounter++;
+    }
+
+    public static void startBenchmark(Window window, Config config, float duration) {
+        benchmark = new Benchmark(window, config, numInnerOctreeNodes, numEmptyOctreeLeafNodes, numVoxelArrays, numNonEmptyVoxels, numTriangles, (long) (duration * 1_000_000_000L));
+    }
+
+    public static void startBenchmark(Window window, Config config) {
+        startBenchmark(window, config, -1);
+    }
+
+    public static void frameTime(long frameTime) {
+        if(benchmark == null)
+            return;
+        if(benchmark.frameTime(frameTime))
+            endBenchmark();
+    }
+
+    public static void endBenchmark() {
+        benchmark.end(numInnerOctreeNodes, numEmptyOctreeLeafNodes, numVoxelArrays, numNonEmptyVoxels, numTriangles);
+        benchmark = null;
+    }
+
+    public static void switchBenchmarkMode(BenchmarkMode mode) {
+        if(benchmark != null)
+            benchmark.switchMode(mode);
     }
 
 }

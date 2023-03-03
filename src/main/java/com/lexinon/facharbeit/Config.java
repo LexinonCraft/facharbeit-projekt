@@ -56,7 +56,7 @@ public class Config {
         } else if(line.startsWith("seed="))
             seed = Integer.parseInt(line.substring(5));
         else if(line.startsWith("flat-world-height="))
-            seed = Integer.parseInt(line.substring(18));
+            flatWorldHeight = Integer.parseInt(line.substring(18));
         else if(line.startsWith("place-trees="))
             placeTrees = !line.substring(12).equals("false");
         else if(line.startsWith("place-decorations="))

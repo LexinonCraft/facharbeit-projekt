@@ -48,6 +48,9 @@ public class Window {
     private boolean keyF2Clicked = false;
     private boolean keyF3Clicked = false;
 
+    private boolean keyF5Clicked = false;
+    private boolean keyF6Clicked = false;
+
     private int selectedNum = -1;
 
     public Window(int windowedWidth, int windowedHeight, String title) {
@@ -119,6 +122,8 @@ public class Window {
         keyF1Clicked = false;
         keyF2Clicked = false;
         keyF3Clicked = false;
+        keyF5Clicked = false;
+        keyF6Clicked = false;
 
         selectedNum = -1;
 
@@ -295,6 +300,14 @@ public class Window {
         return keyF3Clicked;
     }
 
+    public boolean isKeyF5Clicked() {
+        return keyF5Clicked;
+    }
+
+    public boolean isKeyF6Clicked() {
+        return keyF6Clicked;
+    }
+
     public int getSelectedNum() {
         return selectedNum;
     }
@@ -382,6 +395,14 @@ public class Window {
             case GLFW_KEY_F3 -> {
                 if (action == GLFW_PRESS)
                     keyF3Clicked = true;
+            }
+            case GLFW_KEY_F5 -> {
+                if (action == GLFW_PRESS)
+                    keyF5Clicked = true;
+            }
+            case GLFW_KEY_F6 -> {
+                if (action == GLFW_PRESS)
+                    keyF6Clicked = true;
             }
             case GLFW_KEY_1 -> {
                 if(action == GLFW_PRESS) {

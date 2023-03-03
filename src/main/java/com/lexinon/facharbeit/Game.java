@@ -224,10 +224,15 @@ public class Game {
     private void tick() {
         Metrics.tick();
 
+        if(window.isKeyF5Clicked())
+            Metrics.startBenchmark(window, config, 10);
+
         long currentTime = System.nanoTime();
         long actualDelta = currentTime - lastTime;
         long delta = Math.min(actualDelta, 1_000_000_000);
         lastTime = currentTime;
+
+        Metrics.frameTime(delta);
 
         float yaw = camera.getYaw();
         float pitch = camera.getPitch();
@@ -400,12 +405,12 @@ public class Game {
                     ((((int) buffer.get(3 * i)) << 16) & 0x00FF0000) + (((((int) buffer.get(3 * i + 1)) << 8) & 0x0000FF00) + (((int) buffer.get(3 * i + 2)) & 0x000000FF)) + 0xFF000000);
         }
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss");
-        Date date = new Date();
+        Date now = new Date();
         try {
             new File("screenshots").mkdir();
-            ImageIO.write(image, "png", new File(String.format("screenshots/Screenshot-%s.png", formatter.format(date))));
+            ImageIO.write(image, "png", new File(String.format("screenshots/Screenshot-%s.png", formatter.format(now))));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
     }
 

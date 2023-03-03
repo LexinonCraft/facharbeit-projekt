@@ -47,7 +47,7 @@ public class Overlay {
 
         writeLineLt("#OF");
         writeLineLt("Inner nodes=" + Metrics.getNumInnerOctreeNodes());
-        writeLineLt("Empty leaf nodes=" + Metrics.getNumEmptyOctreeLeafNotes());
+        writeLineLt("Empty leaf nodes=" + Metrics.getNumEmptyOctreeLeafNodes());
         writeLineLt("Voxel arrays/Non-empty leaf nodes=" + Metrics.getNumVoxelArrays());
         writeLineLt("Non-empty voxels=" + Metrics.getNumNonEmptyVoxels());
         writeLineLt("Triangles=" + Metrics.getNumTriangles());
