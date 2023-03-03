@@ -25,7 +25,6 @@ public class OctreeEmptyLeafNode implements IOctreeNode {
 
     @Override
     public IOctreeNode removeVoxel(Vector3i pos, IOctreeParentNode parentNode, Octree octree) {
-        System.out.println("Känguru");
         return this;
     }
 

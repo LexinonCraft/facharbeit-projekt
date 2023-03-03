@@ -77,117 +77,6 @@ public class Game {
         boxShader = new BoxShader(camera);
         screenShader = new ScreenShader(camera);
 
-        /*int testArray = glGenVertexArrays();
-        glBindVertexArray(testArray);
-
-        int testBuffer = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, testBuffer);
-
-        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(84);
-        floatBuffer.put(-0.5f).put(0f).put(0.5f).put(1f).put(0f).put(0f).put(1f)
-                        .put(0.5f).put(0f).put(0.5f).put(1f).put(0f).put(0f).put(1f)
-                        .put(0f).put(0.5f).put(0f).put(1f).put(0f).put(0f).put(1f)
-
-                        .put(0.5f).put(0f).put(0.5f).put(0f).put(1f).put(0f).put(1f)
-                        .put(0f).put(0f).put(-0.5f).put(0f).put(1f).put(0f).put(1f)
-                        .put(0f).put(0.5f).put(0f).put(0f).put(1f).put(0f).put(1f)
-
-                        .put(0f).put(0f).put(-0.5f).put(0f).put(0f).put(1f).put(1f)
-                        .put(-0.5f).put(0f).put(0.5f).put(0f).put(0f).put(1f).put(1f)
-                        .put(0f).put(0.5f).put(0f).put(0f).put(0f).put(1f).put(1f)
-
-                        .put(-0.5f).put(0f).put(0.5f).put(1f).put(0f).put(1f).put(1f)
-                        .put(0.5f).put(0f).put(0.5f).put(1f).put(1f).put(0f).put(1f)
-                        .put(0f).put(0f).put(-0.5f).put(0f).put(1f).put(1f).put(1f).flip();
-        glBufferData(GL_ARRAY_BUFFER, floatBuffer, GL_STATIC_DRAW);
-
-        glBindVertexArray(testArray);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 28, 0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 4, GL_FLOAT, false, 28, 12);
-        glEnableVertexAttribArray(1);*/
-
-        /*MeshBuilder meshBuilder = new MeshBuilder(24);
-        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.UP, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.DOWN, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.NORTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.EAST, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.SOUTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(0, 0, 0), Direction.WEST, new Vector2f(9, 17).div(32));
-
-        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.UP, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.DOWN, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.NORTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.EAST, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.SOUTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 0, 0), Direction.WEST, new Vector2f(9, 17).div(32));
-
-        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.UP, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.DOWN, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.NORTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.EAST, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.SOUTH, new Vector2f(9, 17).div(32));
-        meshBuilder.addFace(new Vector3i(1, 1, 0), Direction.WEST, new Vector2f(9, 17).div(32));
-
-        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.UP, new Vector2f(6, 18).div(32));
-        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.DOWN, new Vector2f(2, 1).div(32));
-        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.NORTH, new Vector2f(2, 0).div(32));
-        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.EAST, new Vector2f(2, 0).div(32));
-        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.SOUTH, new Vector2f(2, 0).div(32));
-        meshBuilder.addFace(new Vector3i(1, -5, 3), Direction.WEST, new Vector2f(2, 0).div(32));
-
-        testMesh = meshBuilder.build();*/
-
-        //octree = new Octree(6, 4, this);
-
-        //octree.addVoxel(new Vector3i(0, 0, 0), Material.CRATE.getId());
-        //octree.addVoxel(new Vector3i(1, 0, 0), Material.CRATE.getId());
-        //octree.addVoxel(new Vector3i(1, 1, 0), Material.CRATE.getId());
-
-        //octree.addVoxel(new Vector3i(1, -5, 3), Material.GRASS.getId());
-
-        /*for(int x = -64; x < 64; x++) {
-            for(int y = 0; y < 2; y++) {
-                for (int z = -64; z < 64; z++) {
-                    //if(x == 0 && y == 0 && z == 0)
-                    //    continue;
-                    octree.addVoxel(new Vector3i(x, y, z), Material.TEST_STONE.getId());
-                }
-            }
-        }
-
-        for(int x = -64; x < 64; x++) {
-            for(int y = 2; y < 3; y++) {
-                for (int z = -64; z < 64; z++) {
-                    //if(x == 0 && y == 0 && z == 0)
-                    //    continue;
-                    octree.addVoxel(new Vector3i(x, y, z), Material.GRASS.getId());
-                }
-            }
-        }*/
-
-        //octree.addVoxel(new Vector3i(25, 3, 17), Material.LOG.getId());
-        //octree.addVoxel(new Vector3i(25, 4, 17), Material.LOG.getId());
-        //octree.addVoxel(new Vector3i(25, 5, 17), Material.LOG.getId());
-        //octree.addVoxel(new Vector3i(25, 6, 17), Material.LOG.getId());
-        //octree.addVoxel(new Vector3i(24, 6, 17), Material.LEAVES.getId());
-        //octree.addVoxel(new Vector3i(26, 6, 17), Material.LEAVES.getId());
-        //octree.addVoxel(new Vector3i(25, 6, 16), Material.LEAVES.getId());
-        //octree.addVoxel(new Vector3i(25, 6, 18), Material.LEAVES.getId());
-        //octree.addVoxel(new Vector3i(25, 7, 17), Material.LEAVES.getId());
-
-        /*for(int x = 0; x < 20; x++) {
-            for(int y = 0; y < 20; y++) {
-                for (int z = 0; z < 20; z++) {
-                    //if(x == 0 && y == 0 && z == 0)
-                    //    continue;
-                    octree.addVoxel(new Vector3i(x, y, z), Material.GRASS.getId());
-                }
-            }
-        }*/
-
-        //octree.removeVoxel(new Vector3i(0, 0, 0));
-
         IWorldGenerator worldGenerator = switch(config.getWorldType()) {
             case TERRAIN -> new TerrainGenerator()
                     .setWorldSize(1 << (config.getDepth() + config.getEdgeLengthExponent()))
@@ -199,10 +88,6 @@ public class Game {
 
         octree = worldGenerator.setCameraToTerrainHeight(0, 0, camera)
                 .generate(config.getDepth(), config.getEdgeLengthExponent(), this);
-
-        /*octree = new EmptyWorldGenerator()
-                .setCameraToTerrainHeight(0, 0, camera)
-                .generate(4, 6, this);*/
 
         voxelTextureAtlas = new VoxelTextureAtlas(game);
         screenTextureAtlas = new ScreenTextureAtlas(game);
@@ -268,7 +153,6 @@ public class Game {
         pitch -= window.getMouseYMovement() / 500f;
         pitch = (float) Math.max(pitch, -0.5 * Math.PI);
         pitch = (float) Math.min(pitch, 0.5 * Math.PI);
-        //System.out.println(pitch);
         camera.setYaw(yaw);
         camera.setPitch(pitch);
 
@@ -376,20 +260,7 @@ public class Game {
             boxMesh.draw(selectedVoxel, this);
 
         glDisable(GL_DEPTH_TEST);
-        /*screenMesh = new ScreenMesh();
-        List<ScreenObject> screenObjectList = new ArrayList<>();
-        screenObjectList.add(new ScreenObject(new Vector2f(0f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(8f, 2f)));
-        screenObjectList.add(new ScreenObject(new Vector2f(1f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(1f, 4f)));
-        screenObjectList.add(new ScreenObject(new Vector2f(2f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(12f, 4f)));
-        screenObjectList.add(new ScreenObject(new Vector2f(3f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(12f, 4f)));
-        screenObjectList.add(new ScreenObject(new Vector2f(4f * ScreenShader.CHARACTER_SIZE, 0f * ScreenShader.CHARACTER_SIZE), new Vector2f(15f, 4f)));
 
-        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 4f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(7f, 3f)));
-        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 3f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(5f, 4f)));
-        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 2f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(12f, 4f)));
-        screenObjectList.add(new ScreenObject(new Vector2f(window.getFramebufferWidth() - 1f * ScreenShader.CHARACTER_SIZE, 0f), new Vector2f(4f, 5f)));
-        screenMesh.display(screenObjectList, window);
-        screenMesh.draw(window.getFramebufferWidth(), window.getFramebufferHeight(), this);*/
         if(!hideOverlay)
             overlay.draw();
 

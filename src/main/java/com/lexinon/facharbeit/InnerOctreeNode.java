@@ -20,7 +20,6 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
 
     @Override
     public void render(int originX, int originY, int originZ, int volumeEdgeLength, Octree octree) {
-        //System.out.println(origin);
         int half = volumeEdgeLength / 2;
         subtree1.render(originX, originY, originZ, half, octree);
         subtree2.render(originX, originY, originZ + half, half, octree);
@@ -73,41 +72,31 @@ public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
     public IOctreeNode removeVoxel(Vector3i pos, IOctreeParentNode parentNode, Octree octree) { // TODO
         Vector3i newPos = new Vector3i(pos.x << 1, pos.y << 1, pos.z << 1);
 
-        System.out.println(newPos);
-
         if(pos.z < 0) {
             if(pos.y < 0) {
                 if(pos.x < 0) {
-                    System.out.println("ST8");
                     subtree8 = subtree8.removeVoxel(newPos, this, octree);
                 } else {
-                    System.out.println("ST4");
                     subtree4 = subtree4.removeVoxel(newPos, this, octree);
                 }
             } else {
                 if(pos.x < 0) {
-                    System.out.println("ST6");
                     subtree6 = subtree6.removeVoxel(newPos, this, octree);
                 } else {
-                    System.out.println("ST2");
                     subtree2 = subtree2.removeVoxel(newPos, this, octree);
                 }
             }
         } else {
             if(pos.y < 0) {
                 if(pos.x < 0) {
-                    System.out.println("ST7");
                     subtree7 = subtree7.removeVoxel(newPos, this, octree);
                 } else {
-                    System.out.println("ST3");
                     subtree3 = subtree3.removeVoxel(newPos, this, octree);
                 }
             } else {
                 if(pos.x < 0) {
-                    System.out.println("ST5");
                     subtree5 = subtree5.removeVoxel(newPos, this, octree);
                 } else {
-                    System.out.println("ST1 " /*+ Integer.toBinaryString(pos.x)*/);
                     subtree1 = subtree1.removeVoxel(newPos, this, octree);
                 }
             }
