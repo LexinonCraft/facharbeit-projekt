@@ -315,12 +315,12 @@ public class Window {
             glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
 
+        if(key == GLFW_KEY_F10 && action == GLFW_PRESS)
+            System.gc();
         if(key == GLFW_KEY_F11 && action == GLFW_PRESS)
             toggleFullscreen();
         if(key == GLFW_KEY_F12 && action == GLFW_PRESS)
             toggleFullscreenMonitor();
-        if(key == GLFW_KEY_G && action == GLFW_PRESS)
-            System.gc();
 
         switch(key) {
             case GLFW_KEY_W -> {
