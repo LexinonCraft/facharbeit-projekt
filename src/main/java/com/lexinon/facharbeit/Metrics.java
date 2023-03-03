@@ -118,9 +118,9 @@ public class Metrics {
         benchmark = null;
     }
 
-    public static void switchBenchmarkMode(BenchmarkProfile mode) {
+    public static void switchBenchmarkProfile(BenchmarkProfile profile) {
         if(benchmark != null)
-            benchmark.switchMode(mode);
+            benchmark.switchProfile(profile);
     }
 
     public static boolean isBenchmarkRunning() {

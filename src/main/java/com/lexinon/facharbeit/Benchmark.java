@@ -3,10 +3,13 @@ package com.lexinon.facharbeit;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Benchmark {
 
@@ -21,11 +24,14 @@ public class Benchmark {
     private float[] currentFrameTimesArray = new float[FRAME_TIME_VALUES_PER_LIST_ENTRY];
     private int currentFrameTimesArrayIndex = 0;
 
-    private BenchmarkProfile benchmarkProfile = BenchmarkProfile.OTHER;
+    private BenchmarkProfile benchmarkProfile = BenchmarkProfile.NONE;
     private long lastTime;
     private long
             timeTraversingTree,
-            timeDrawCall;
+            timeDrawCall,
+            timeWaitingForGpu,
+            timeGeneratingMesh,
+            timeOther;
 
     public Benchmark(Window window, Config config, long innerOctreeNodes, long emptyOctreeLeafNodes, long voxelArrays, long nonEmptyVoxels, long triangles, long duration) {
         this.window = window;
@@ -54,13 +60,16 @@ public class Benchmark {
         return duration >= 0 && timeElapsed > duration;
     }
 
-    public void switchMode(BenchmarkProfile newProfile) {
+    public void switchProfile(BenchmarkProfile newProfile) {
         long currentTime = System.nanoTime();
         long delta = currentTime - lastTime;
 
         switch(benchmarkProfile) {
             case TRAVERSING_TREE -> timeTraversingTree += delta;
             case DRAW_CALL -> timeDrawCall += delta;
+            case WAITING_FOR_GPU -> timeWaitingForGpu += delta;
+            case GENERATING_MESH -> timeGeneratingMesh += delta;
+            case OTHER -> timeOther += delta;
         }
 
         benchmarkProfile = newProfile;
@@ -68,20 +77,20 @@ public class Benchmark {
     }
 
     public void end(long innerOctreeNodes, long emptyOctreeLeafNodes, long voxelArrays, long nonEmptyVoxels, long triangles) {
-        switchMode(BenchmarkProfile.OTHER);
+        switchProfile(BenchmarkProfile.NONE);
         if(currentFrameTimesArrayIndex != 0)
             frameTimes.add(currentFrameTimesArray);
 
         float[] fullFrameTimesArray = generateFullFrameTimesArray();
         Util.bubbleSort(fullFrameTimesArray);
 
-        float sum = 0;
+        float sumFrameTimes = 0;
         for(int i = 0; i < fullFrameTimesArray.length; i++) {
-            sum += fullFrameTimesArray[i];
+            sumFrameTimes += fullFrameTimesArray[i];
         }
-        float average = sum / fullFrameTimesArray.length;
+        float averageFrameTime = sumFrameTimes / fullFrameTimesArray.length;
 
-        float firstPercentile = fullFrameTimesArray[fullFrameTimesArray.length / 100 * 99];
+        float firstPercentileFrameTime = fullFrameTimesArray[fullFrameTimesArray.length / 100 * 99];
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
         Date now = new Date();
@@ -91,33 +100,42 @@ public class Benchmark {
             f.createNewFile();
             FileWriter fw = new FileWriter(f);
 
-            fw.write(window.getFramebufferWidth() + "\n");
-            fw.write(window.getFramebufferHeight() + "\n");
-            fw.write(timeElapsed / 1_000_000_000f + "\n");
+            DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+            DecimalFormat df = new DecimalFormat("#", dfs);
+            df.setMaximumFractionDigits(8);
+            df.setMinimumIntegerDigits(1);
+            df.setDecimalSeparatorAlwaysShown(false);
 
-            fw.write(config.getDepth() + "\n");
-            fw.write(config.getEdgeLengthExponent() + "\n");
+            fw.write(df.format(window.getFramebufferWidth()) + "\n");
+            fw.write(df.format(window.getFramebufferHeight()) + "\n");
+            fw.write(df.format(timeElapsed / 1_000_000_000f) + "\n");
+
+            fw.write(df.format(config.getDepth()) + "\n");
+            fw.write(df.format(config.getEdgeLengthExponent()) + "\n");
             fw.write(config.getWorldType().toString() + "\n");
-            fw.write(config.getSeed() + "\n");
+            fw.write(df.format(config.getSeed()) + "\n");
 
-            fw.write(fullFrameTimesArray.length + "\n");
-            fw.write(average + "\n");
-            fw.write(firstPercentile + "\n");
+            fw.write(df.format(fullFrameTimesArray.length) + "\n");
+            fw.write(df.format(averageFrameTime) + "\n");
+            fw.write(df.format(firstPercentileFrameTime) + "\n");
 
-            fw.write(beforeInnerOctreeNodes + "\n");
-            fw.write(beforeEmptyOctreeLeafNodes + "\n");
-            fw.write(beforeVoxelArrays + "\n");
-            fw.write(beforeNonEmptyVoxels + "\n");
-            fw.write(beforeTriangles + "\n");
+            fw.write(df.format(beforeInnerOctreeNodes) + "\n");
+            fw.write(df.format(beforeEmptyOctreeLeafNodes) + "\n");
+            fw.write(df.format(beforeVoxelArrays) + "\n");
+            fw.write(df.format(beforeNonEmptyVoxels) + "\n");
+            fw.write(df.format(beforeTriangles) + "\n");
 
-            fw.write(innerOctreeNodes + "\n");
-            fw.write(emptyOctreeLeafNodes + "\n");
-            fw.write(voxelArrays + "\n");
-            fw.write(nonEmptyVoxels + "\n");
-            fw.write(triangles + "\n");
+            fw.write(df.format(innerOctreeNodes) + "\n");
+            fw.write(df.format(emptyOctreeLeafNodes) + "\n");
+            fw.write(df.format(voxelArrays) + "\n");
+            fw.write(df.format(nonEmptyVoxels) + "\n");
+            fw.write(df.format(triangles) + "\n");
 
-            fw.write(timeTraversingTree / 1_000_000_000f / fullFrameTimesArray.length + "\n");
-            fw.write(timeDrawCall / 1_000_000_000f / fullFrameTimesArray.length + "\n");
+            fw.write(df.format(timeTraversingTree / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
+            fw.write(df.format(timeDrawCall / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
+            fw.write(df.format(timeWaitingForGpu / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
+            fw.write(df.format(timeGeneratingMesh / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
+            fw.write(df.format(timeOther / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
 
             fw.flush();
         } catch(IOException e) {

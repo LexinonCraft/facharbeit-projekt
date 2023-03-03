@@ -127,7 +127,9 @@ public class Window {
 
         selectedNum = -1;
 
+        Metrics.switchBenchmarkProfile(BenchmarkProfile.WAITING_FOR_GPU);
         glfwSwapBuffers(handle);
+        Metrics.switchBenchmarkProfile(BenchmarkProfile.OTHER);
         glfwPollEvents();
 
         lastMouseXPos = currentMouseXPos;
