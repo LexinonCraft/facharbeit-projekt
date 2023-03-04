@@ -62,6 +62,8 @@ public class Game {
      * This method is executed once at the start of the application to initialize it.
      */
     private void init() {
+        System.out.println("Application started");
+        System.out.println("Initializing...");
         config = Config.read(new File("config.txt"));
 
         window = new Window(800, 600, "Facharbeit Projekt");
@@ -82,8 +84,10 @@ public class Game {
                     .setWorldSize(1 << (config.getDepth() + config.getEdgeLengthExponent()), config.getFlatWorldHeight(), 1 << (config.getDepth() + config.getEdgeLengthExponent()));
         };
 
+        System.out.println("Generating world...");
         octree = worldGenerator.setCameraToTerrainHeight(0, 0, camera)
                 .generate(config.getDepth(), config.getEdgeLengthExponent(), this);
+        System.out.println("Generated world!");
 
         new VoxelTextureAtlas(game);
         new ScreenTextureAtlas(game);
@@ -99,6 +103,7 @@ public class Game {
         glEnable(GL_CULL_FACE);
 
         window.show();
+        System.out.println("Initialization finished!");
     }
 
     /**
@@ -292,6 +297,7 @@ public class Game {
      * This method is called before terminating the application to release resources
      */
     public void terminate() {
+        System.out.println("Terminating...");
         window.hide();
         octree.deleteEverything();
         boxMesh.delete();
