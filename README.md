@@ -1,3 +1,5 @@
-# VoxelEditor
+# Facharbeit Project
 
-A project for my term paper
+A project for my Facharbeit.
+
+_Clearly nothing to see here..._

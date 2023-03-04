@@ -1,0 +1,97 @@
+package com.lexinon.facharbeit;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+public class Camera {
+
+    private Vector3f eye;
+    private float yaw;      // looking left and right
+    private float pitch;    // looking up and down
+    private float fov;
+    private float aspectRatio;
+    private float zNear, zFar;
+    private Matrix4f viewProjectionMatrix;
+    private final Matrix4f modelViewProjectionMatrix = new Matrix4f();
+
+    public Camera() {
+        eye = new Vector3f();
+        yaw = 0f;
+        pitch = 0f;
+        fov = 90;
+        zNear = 0.1f;
+        zFar = 1024f;
+        updateViewProjectionMatrix();
+    }
+
+    public Matrix4f updateViewProjectionMatrix() {
+        return viewProjectionMatrix = new Matrix4f()
+            .perspective((float) Math.toRadians(fov), aspectRatio, zNear, zFar)
+                .lookAt(eye, new Vector3f((float) (Math.sin(yaw) * Math.cos(pitch)), (float) Math.sin(pitch), -(float) (Math.cos(yaw) * Math.cos(pitch))).normalize().add(eye),
+                        new Vector3f((float) (Math.sin(yaw) * Math.sin(-pitch)), (float) Math.cos(pitch), -(float) (Math.cos(yaw) * Math.sin(-pitch))).normalize());
+    }
+
+    public Matrix4f getViewProjectionMatrix() {
+        return viewProjectionMatrix;
+    }
+
+    public Vector3f getEye() {
+        return eye;
+    }
+
+    public void setEye(Vector3f eye) {
+        this.eye = eye;
+    }
+
+    public float getYaw() {
+        return yaw;
+    }
+
+    public void setYaw(float yaw) {
+        this.yaw = yaw % (2 * (float) Math.PI);
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    public float getAspectRatio() {
+        return aspectRatio;
+    }
+
+    public void setAspectRatio(float aspectRatio) {
+        this.aspectRatio = aspectRatio;
+    }
+
+    public float getFov() {
+        return fov;
+    }
+
+    public void setFov(float fov) {
+        this.fov = fov;
+    }
+
+    public float getZNear() {
+        return zNear;
+    }
+
+    public void setZNear(float zNear) {
+        this.zNear = zNear;
+    }
+
+    public float getZFar() {
+        return zFar;
+    }
+
+    public void setZFar(float zFar) {
+        this.zFar = zFar;
+    }
+
+    public Matrix4f getModelViewProjectionMatrix() {
+        return modelViewProjectionMatrix;
+    }
+}
