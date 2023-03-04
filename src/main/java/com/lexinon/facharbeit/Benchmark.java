@@ -132,6 +132,12 @@ public class Benchmark {
             fw.write(df.format(nonEmptyVoxels) + "\n");
             fw.write(df.format(triangles) + "\n");
 
+            fw.write(df.format(Metrics.INNER_OCTREE_NODE_INSTANCE_SIZE) + "\n");
+            fw.write(df.format(Metrics.EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE) + "\n");
+            fw.write(df.format(Metrics.NON_EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE) + "\n");
+            fw.write(df.format(Metrics.MESH_INSTANCE_SIZE) + "\n");
+            fw.write(df.format(((1L << config.getEdgeLengthExponent()) * (1L << config.getEdgeLengthExponent()) * (1L << config.getEdgeLengthExponent())) + 4) + "\n");
+
             fw.write(df.format(timeTraversingTree / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
             fw.write(df.format(timeDrawCall / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
             fw.write(df.format(timeWaitingForGpu / 1_000_000_000f / fullFrameTimesArray.length) + "\n");

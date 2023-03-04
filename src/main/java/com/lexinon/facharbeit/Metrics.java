@@ -3,7 +3,7 @@ package com.lexinon.facharbeit;
 import org.openjdk.jol.info.ClassLayout;
 
 /**
- * The {@code Metrics} is - among other things - responsible for keeping track of the amount of living objects in memory
+ * The {@code Metrics} class is - among other things - responsible for keeping track of the amount of living objects in memory
  * and holding a reference on a {@link Benchmark} object.
  */
 public class Metrics {
