@@ -113,7 +113,6 @@ public class Benchmark {
 
             fw.write(df.format(config.getDepth()) + ",");
             fw.write(df.format(config.getEdgeLengthExponent()) + ",");
-            fw.write((config.doOcclusionTest() ? "on" : "off") + ",");
             fw.write(config.getWorldType().toString() + ",");
             fw.write(df.format(config.getSeed()) + ",");
 
@@ -143,7 +142,9 @@ public class Benchmark {
             fw.write(df.format(timeDrawCall / 1_000_000_000f / fullFrameTimesArray.length) + ",");
             fw.write(df.format(timeWaitingForGpu / 1_000_000_000f / fullFrameTimesArray.length) + ",");
             fw.write(df.format(timeGeneratingMesh / 1_000_000_000f / fullFrameTimesArray.length) + ",");
-            fw.write(df.format(timeOther / 1_000_000_000f / fullFrameTimesArray.length));
+            fw.write(df.format(timeOther / 1_000_000_000f / fullFrameTimesArray.length) + ",");
+
+            fw.write(config.doOcclusionTest() ? "on" : "off");
 
             fw.flush();
         } catch(IOException e) {
