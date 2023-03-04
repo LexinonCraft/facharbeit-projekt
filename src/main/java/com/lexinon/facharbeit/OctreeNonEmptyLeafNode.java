@@ -2,6 +2,9 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector3i;
 
+/**
+ * A leaf node that is associated with an array of voxels and exactly one mesh.
+ */
 public class OctreeNonEmptyLeafNode implements IOctreeNode {
 
     private final short[] content;                // e.g. [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1, 1, 0), (0, 0, 1), (1, 0, 1), (0, 1, 1), (1, 1, 1)]
@@ -75,6 +78,11 @@ public class OctreeNonEmptyLeafNode implements IOctreeNode {
         mesh.delete();
     }
 
+    /**
+     * Compute and upload the volume's new mesh (called by method {@code updateMeshs()} in {@link Octree}).
+     * @param doOcclusionTest Controls whether for each voxel face its visibility should be checked
+     * @param meshBuilder     The {@link MeshBuilder} object that is used to construct the vertex buffer.
+     */
     public void updateMesh(boolean doOcclusionTest, MeshBuilder meshBuilder) {
         meshBuilder = new MeshBuilder(meshBuilder);
 

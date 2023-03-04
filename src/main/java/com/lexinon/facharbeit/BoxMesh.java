@@ -53,14 +53,14 @@ public class BoxMesh {
     }
 
     public void draw(Vector3i pos, Game game) {
-        game.boxShader.use();
+        game.getBoxShader().use();
         glLineWidth(5);
         glBindVertexArray(vao);
 
-        Matrix4f modelViewProjectionMatrix = game.camera.getModelViewProjectionMatrix().set(game.camera.getViewProjectionMatrix())
+        Matrix4f modelViewProjectionMatrix = game.getCamera().getModelViewProjectionMatrix().set(game.getCamera().getViewProjectionMatrix())
                 .translate(pos.x, pos.y, pos.z);
 
-        glUniformMatrix4fv(game.boxShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
+        glUniformMatrix4fv(game.getBoxShader().getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_LINE_STRIP, 0, 16);
     }
 

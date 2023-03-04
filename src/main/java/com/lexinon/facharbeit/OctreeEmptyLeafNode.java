@@ -2,6 +2,9 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector3i;
 
+/**
+ * A node with an empty volume
+ */
 public class OctreeEmptyLeafNode implements IOctreeNode {
 
     public OctreeEmptyLeafNode() {

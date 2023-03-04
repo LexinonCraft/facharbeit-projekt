@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Measure the application's performance over a certain time span and saves it into a file.
+ */
 public class Benchmark {
 
     private static final int FRAME_TIME_VALUES_PER_LIST_ENTRY = 200;
@@ -42,8 +45,6 @@ public class Benchmark {
         this.beforeNonEmptyVoxels = nonEmptyVoxels;
         this.beforeTriangles = triangles;
         this.duration = duration;
-
-        window.lockSize();
     }
 
     public boolean frameTime(long frameTime) {

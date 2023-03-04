@@ -2,6 +2,9 @@ package com.lexinon.facharbeit;
 
 import org.joml.Vector3i;
 
+/**
+ * A node which contains exactly 8 child nodes (although they can each be empty).
+ */
 public class InnerOctreeNode implements IOctreeNode, IOctreeParentNode {
 
     private IOctreeNode subtree1 = new OctreeEmptyLeafNode(),

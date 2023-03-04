@@ -20,7 +20,7 @@ public class Overlay {
     public Overlay(Game game) {
         mesh = new ScreenMesh();
         this.game = game;
-        this.shader = game.screenShader;
+        this.shader = game.getScreenShader();
         this.window = game.getWindow();
         long worldEdgeLength = 1L << (game.getConfig().getDepth() + game.getConfig().getEdgeLengthExponent());
         maxAmountOfVoxels = worldEdgeLength * worldEdgeLength * worldEdgeLength;

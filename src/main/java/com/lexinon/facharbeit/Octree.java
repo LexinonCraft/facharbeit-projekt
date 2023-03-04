@@ -7,6 +7,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.lwjgl.opengl.GL20C.*;
 
+/**
+ * The {@code Octree} class represents the whole octree and furthermore contains some important configurations for the
+ * construction of the octree. (See {@link IOctreeNode} for a more generalized explanation for the most important
+ * methods of this class)
+ */
 public class Octree implements IOctreeParentNode {
 
     private IOctreeNode rootNode = new OctreeEmptyLeafNode();
@@ -27,9 +32,9 @@ public class Octree implements IOctreeParentNode {
     }
 
     public void render() {
-        game.voxelShader.use();
-        glUniform1i(game.voxelShader.getTextureAtlasLoc(), 0);
-        glUniform4f(game.voxelShader.getFogColorLoc(), 0.74609375f, 0.9140625f, 0.95703125f, 1f);
+        game.getVoxelShader().use();
+        glUniform1i(game.getVoxelShader().getTextureAtlasLoc(), 0);
+        glUniform4f(game.getVoxelShader().getFogColorLoc(), 0.74609375f, 0.9140625f, 0.95703125f, 1f);
         Metrics.switchBenchmarkProfile(BenchmarkProfile.TRAVERSING_TREE);
         rootNode.render(-(1 << (depth + leafNodeArrayEdgeLengthExponent - 1)), -(1 << (depth + leafNodeArrayEdgeLengthExponent - 1)), -(1 << (depth + leafNodeArrayEdgeLengthExponent - 1)), 1 << (depth + leafNodeArrayEdgeLengthExponent), this);
         Metrics.switchBenchmarkProfile(BenchmarkProfile.OTHER);

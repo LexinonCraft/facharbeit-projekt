@@ -22,7 +22,6 @@ public class Window {
     private int windowedWidth, windowedHeight;
     private int framebufferWidth, framebufferHeight;
     private int fullscreenRefreshRate = 0;
-    private boolean sizeChanged = true;
     private String title;
     private String gpuName = "Unknown GPU";
 
@@ -182,7 +181,6 @@ public class Window {
             makeWindowed();
         else
             makeFullScreen();
-        sizeChanged = true;
     }
 
     public void toggleFullscreenMonitor() {
@@ -210,7 +208,6 @@ public class Window {
                 throw new IllegalStateException("An error occurred while toggling the fullscreen monitor!");
             glfwSetWindowMonitor(handle, monitor, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate());
         }
-        sizeChanged = true;
     }
 
     public boolean shouldClose() {
@@ -236,14 +233,6 @@ public class Window {
 
     public boolean isFullscreen() {
         return fullscreen;
-    }
-
-    public void lockSize() {
-        sizeChanged = false;
-    }
-
-    public boolean hasSizeChanged() {
-        return sizeChanged;
     }
 
     public String getGpuName() {
@@ -320,7 +309,6 @@ public class Window {
     private void framebufferSizeCallback(long handle, int width, int height) {
         framebufferWidth = width;
         framebufferHeight = height;
-        sizeChanged = true;
         glViewport(0, 0, width, height);
     }
 

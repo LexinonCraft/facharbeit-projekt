@@ -9,6 +9,9 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL30C.*;
 
+/**
+ * Holds the handles of the VAO and VBO of a single mesh.
+ */
 public class Mesh {
 
     public static final int MAX_AMOUNT_OF_FLOATS_PER_FACE = 5 * 3 * 2;
@@ -50,10 +53,10 @@ public class Mesh {
     public void draw(int originX, int originY, int originZ, Game game) {
         glBindVertexArray(vao);
 
-        Matrix4f modelViewProjectionMatrix = game.camera.getModelViewProjectionMatrix().set(game.camera.getViewProjectionMatrix())
+        Matrix4f modelViewProjectionMatrix = game.getCamera().getModelViewProjectionMatrix().set(game.getCamera().getViewProjectionMatrix())
                         .translate(originX, originY, originZ);
 
-        glUniformMatrix4fv(game.voxelShader.getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
+        glUniformMatrix4fv(game.getVoxelShader().getModelViewProjectionMatrixLoc(), false, modelViewProjectionMatrix.get(matrixBuffer));
         glDrawArrays(GL_TRIANGLES, 0, vertices);
     }
 

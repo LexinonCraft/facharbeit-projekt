@@ -15,22 +15,21 @@ import java.util.Date;
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL20C.*;
 
+/**
+ * The {@code Game} class contains most of the game's global state.
+ */
 public class Game {
 
     private static Game game;
 
     private Window window;
-    public Camera camera;
+    private Camera camera;
     private Config config;
 
-    private VoxelTextureAtlas voxelTextureAtlas;
-    private ScreenTextureAtlas screenTextureAtlas;
-
-    public VoxelShader voxelShader;
-    public BoxShader boxShader;
-    public ScreenShader screenShader;
+    private VoxelShader voxelShader;
+    private BoxShader boxShader;
+    private ScreenShader screenShader;
     private Octree octree;
-    private PerlinNoiseGenerator noiseGenerator;
     private BoxMesh boxMesh;
     private Overlay overlay;
     private BenchmarkMode benchmarkMode = BenchmarkMode.NONE;
@@ -48,10 +47,6 @@ public class Game {
     private int placeCooldown = 0;
     private boolean shouldTerminate = false;
 
-    public static Game get() {
-        return game;
-    }
-
     public static void run() {
         if(game != null)
             throw new IllegalStateException("Game already runs!");
@@ -63,14 +58,15 @@ public class Game {
         game.terminate();
     }
 
+    /**
+     * This method is executed once at the start of the application to initialize it.
+     */
     private void init() {
         config = Config.read(new File("config.txt"));
 
         window = new Window(800, 600, "Facharbeit Projekt");
         camera = new Camera();
-        camera.setEye(new Vector3f(0.5f, 1f, 1f));
-        //camera.setEye(new Vector3f(0f, 0f, 2f));
-        //camera.setYaw(-0.25f * (float) Math.PI);
+        camera.setEye(new Vector3f(0.5f, 1f, 1f)); // TODO
         camera.updateViewProjectionMatrix();
 
         voxelShader = new VoxelShader(camera);
@@ -89,8 +85,8 @@ public class Game {
         octree = worldGenerator.setCameraToTerrainHeight(0, 0, camera)
                 .generate(config.getDepth(), config.getEdgeLengthExponent(), this);
 
-        voxelTextureAtlas = new VoxelTextureAtlas(game);
-        screenTextureAtlas = new ScreenTextureAtlas(game);
+        new VoxelTextureAtlas(game);
+        new ScreenTextureAtlas(game);
 
         boxMesh = new BoxMesh();
 
@@ -105,9 +101,13 @@ public class Game {
         window.show();
     }
 
+    /**
+     * This method is run periodically during the application's runtime.
+     */
     private void tick() {
         Metrics.tick();
 
+        // Handle benchmark keys
         if(window.isKeyF5Clicked())
             switch(benchmarkMode) {
                 case NONE, WAITING_UNLIMITED -> {
@@ -140,6 +140,7 @@ public class Game {
         if(!Metrics.isBenchmarkRunning() && (benchmarkMode == BenchmarkMode.ACTIVE_LIMITED || benchmarkMode == BenchmarkMode.ACTIVE_UNLIMITED))
             benchmarkMode = BenchmarkMode.NONE;
 
+        // Calculate delta so that the application always runs at the same speed
         long currentTime = System.nanoTime();
         long actualDelta = currentTime - lastTime;
         long delta = Math.min(actualDelta, 1_000_000_000);
@@ -147,6 +148,7 @@ public class Game {
 
         Metrics.frameTime(delta);
 
+        // Handle camera movement
         float yaw = camera.getYaw();
         float pitch = camera.getPitch();
         yaw += window.getMouseXMovement() / 500f;
@@ -167,9 +169,15 @@ public class Game {
                         - (window.isKeyDPressed() ? movementSpeed * (float) Math.sin(-yaw) : 0)
                 ).mul(delta / 1_000_000_000f * 5));
 
+        camera.setAspectRatio((float) window.getFramebufferWidth() / window.getFramebufferHeight());
+
+        camera.updateViewProjectionMatrix();
+
+        // Determine voxel position selected by the player
         Vector3f lookingAt = new Vector3f(camera.getEye()).add(new Vector3f((float) (Math.sin(yaw) * Math.cos(pitch)), (float) Math.sin(pitch), -(float) (Math.cos(yaw) * Math.cos(pitch))).normalize().mul(selectionDistance));
         Vector3i selectedVoxel = new Vector3i((int) Math.floor(lookingAt.x), (int) Math.floor(lookingAt.y), (int) Math.floor(lookingAt.z));
 
+        // Handle input of the mouse buttons to add (place) or remove (destroy) a voxel with a cooldown
         if(destroyCooldown > delta)
             destroyCooldown -= delta;
         else
@@ -195,6 +203,7 @@ public class Game {
         if(!window.isRightMouseButtonPressed())
             placeCooldown = 0;
 
+        // Handle scroll input
         double scroll = window.getScroll();
         if(window.isCtrlPressed()) {
             if(window.isAltPressed()) {
@@ -218,6 +227,7 @@ public class Game {
             }
         }
 
+        // Determine material currently selected by the player to be placed later
         selectedMaterial = switch(window.getSelectedNum()) {
             case 0 -> Material.CRATE;
             case 1 -> Material.GRASS;
@@ -240,39 +250,47 @@ public class Game {
             default -> selectedMaterial;
         };
 
-        camera.setAspectRatio((float) window.getFramebufferWidth() / window.getFramebufferHeight());
-
-        camera.updateViewProjectionMatrix();
-
+        // Update all meshes modified in this frame
         octree.updateMeshs();
 
+        // Show / hide selection box and overlay
         if(window.isKeyF1Clicked())
             hideSelectionBox = !hideSelectionBox;
         if(window.isKeyF3Clicked())
             hideOverlay = !hideOverlay;
 
+        // Draw sky
         glClearColor(0.74609375f, 0.9140625f, 0.95703125f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Draw voxels
         glEnable(GL_DEPTH_TEST);
         octree.render();
 
+        // Draw selection box
         if(!hideSelectionBox)
             boxMesh.draw(selectedVoxel, this);
 
+        // Draw overlay
         glDisable(GL_DEPTH_TEST);
-
         if(!hideOverlay)
             overlay.draw();
 
+        // Show updated content of framebuffer and poll events
         window.update();
 
+        // Take a screenshot if requested
         if(window.isKeyF2Clicked())
             takeScreenshot();
 
+        // Check whether the user requests to close the window
         if(window.shouldClose())
             shouldTerminate = true;
     }
 
+    /**
+     * This method is called before terminating the application to release resources
+     */
     public void terminate() {
         window.hide();
         octree.deleteEverything();
@@ -339,4 +357,17 @@ public class Game {
     public BenchmarkMode getBenchmarkMode() {
         return benchmarkMode;
     }
+
+    public VoxelShader getVoxelShader() {
+        return voxelShader;
+    }
+
+    public BoxShader getBoxShader() {
+        return boxShader;
+    }
+
+    public ScreenShader getScreenShader() {
+        return screenShader;
+    }
+
 }
