@@ -113,6 +113,7 @@ public class Benchmark {
 
             fw.write(df.format(config.getDepth()) + ",");
             fw.write(df.format(config.getEdgeLengthExponent()) + ",");
+            fw.write((config.doOcclusionTest() ? "on" : "off") + ",");
             fw.write(config.getWorldType().toString() + ",");
             fw.write(df.format(config.getSeed()) + ",");
 
