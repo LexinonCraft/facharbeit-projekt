@@ -107,42 +107,42 @@ public class Benchmark {
             df.setMinimumIntegerDigits(1);
             df.setDecimalSeparatorAlwaysShown(false);
 
-            fw.write(df.format(window.getFramebufferWidth()) + "\n");
-            fw.write(df.format(window.getFramebufferHeight()) + "\n");
-            fw.write(df.format(timeElapsed / 1_000_000_000f) + "\n");
+            fw.write(df.format(window.getFramebufferWidth()) + ",");
+            fw.write(df.format(window.getFramebufferHeight()) + ",");
+            fw.write(df.format(timeElapsed / 1_000_000_000f) + ",");
 
-            fw.write(df.format(config.getDepth()) + "\n");
-            fw.write(df.format(config.getEdgeLengthExponent()) + "\n");
-            fw.write(config.getWorldType().toString() + "\n");
-            fw.write(df.format(config.getSeed()) + "\n");
+            fw.write(df.format(config.getDepth()) + ",");
+            fw.write(df.format(config.getEdgeLengthExponent()) + ",");
+            fw.write(config.getWorldType().toString() + ",");
+            fw.write(df.format(config.getSeed()) + ",");
 
-            fw.write(df.format(fullFrameTimesArray.length) + "\n");
-            fw.write(df.format(averageFrameTime) + "\n");
-            fw.write(df.format(firstPercentileFrameTime) + "\n");
+            fw.write(df.format(fullFrameTimesArray.length) + ",");
+            fw.write(df.format(averageFrameTime) + ",");
+            fw.write(df.format(firstPercentileFrameTime) + ",");
 
-            fw.write(df.format(beforeInnerOctreeNodes) + "\n");
-            fw.write(df.format(beforeEmptyOctreeLeafNodes) + "\n");
-            fw.write(df.format(beforeVoxelArrays) + "\n");
-            fw.write(df.format(beforeNonEmptyVoxels) + "\n");
-            fw.write(df.format(beforeTriangles) + "\n");
+            fw.write(df.format(beforeInnerOctreeNodes) + ",");
+            fw.write(df.format(beforeEmptyOctreeLeafNodes) + ",");
+            fw.write(df.format(beforeVoxelArrays) + ",");
+            fw.write(df.format(beforeNonEmptyVoxels) + ",");
+            fw.write(df.format(beforeTriangles) + ",");
 
-            fw.write(df.format(innerOctreeNodes) + "\n");
-            fw.write(df.format(emptyOctreeLeafNodes) + "\n");
-            fw.write(df.format(voxelArrays) + "\n");
-            fw.write(df.format(nonEmptyVoxels) + "\n");
-            fw.write(df.format(triangles) + "\n");
+            fw.write(df.format(innerOctreeNodes) + ",");
+            fw.write(df.format(emptyOctreeLeafNodes) + ",");
+            fw.write(df.format(voxelArrays) + ",");
+            fw.write(df.format(nonEmptyVoxels) + ",");
+            fw.write(df.format(triangles) + ",");
 
-            fw.write(df.format(Metrics.INNER_OCTREE_NODE_INSTANCE_SIZE) + "\n");
-            fw.write(df.format(Metrics.EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE) + "\n");
-            fw.write(df.format(Metrics.NON_EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE) + "\n");
-            fw.write(df.format(Metrics.MESH_INSTANCE_SIZE) + "\n");
-            fw.write(df.format(((1L << config.getEdgeLengthExponent()) * (1L << config.getEdgeLengthExponent()) * (1L << config.getEdgeLengthExponent())) + 4) + "\n");
+            fw.write(df.format(Metrics.INNER_OCTREE_NODE_INSTANCE_SIZE) + ",");
+            fw.write(df.format(Metrics.EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE) + ",");
+            fw.write(df.format(Metrics.NON_EMPTY_OCTREE_LEAF_NODE_INSTANCE_SIZE) + ",");
+            fw.write(df.format(Metrics.MESH_INSTANCE_SIZE) + ",");
+            fw.write(df.format(((1L << config.getEdgeLengthExponent()) * (1L << config.getEdgeLengthExponent()) * (1L << config.getEdgeLengthExponent())) + 4) + ",");
 
-            fw.write(df.format(timeTraversingTree / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
-            fw.write(df.format(timeDrawCall / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
-            fw.write(df.format(timeWaitingForGpu / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
-            fw.write(df.format(timeGeneratingMesh / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
-            fw.write(df.format(timeOther / 1_000_000_000f / fullFrameTimesArray.length) + "\n");
+            fw.write(df.format(timeTraversingTree / 1_000_000_000f / fullFrameTimesArray.length) + ",");
+            fw.write(df.format(timeDrawCall / 1_000_000_000f / fullFrameTimesArray.length) + ",");
+            fw.write(df.format(timeWaitingForGpu / 1_000_000_000f / fullFrameTimesArray.length) + ",");
+            fw.write(df.format(timeGeneratingMesh / 1_000_000_000f / fullFrameTimesArray.length) + ",");
+            fw.write(df.format(timeOther / 1_000_000_000f / fullFrameTimesArray.length));
 
             fw.flush();
         } catch(IOException e) {
