@@ -1,4 +1,4 @@
-import org.gradle.internal.os.OperatingSystem
+//import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id 'java'
@@ -31,7 +31,7 @@ tasks.getByName('processResources') {
 mkdir('run')
 tasks.run.workingDir('run')
 
-switch (OperatingSystem.current()) {
+/*switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
         def osArch = System.getProperty("os.arch")
         project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
@@ -47,7 +47,7 @@ switch (OperatingSystem.current()) {
                 ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}"
                 : "natives-windows-x86"
         break
-}
+}*/
 
 repositories {
     mavenCentral()
