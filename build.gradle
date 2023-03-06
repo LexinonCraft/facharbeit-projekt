@@ -57,6 +57,15 @@ configurations {
     includeInJar
 }
 
+def natives(String lwjglNatives) {
+    dependencies.includeInJar "org.lwjgl:lwjgl::$lwjglNatives"
+    dependencies.includeInJar "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+    dependencies.includeInJar "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    dependencies.includeInJar "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    dependencies.includeInJar "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    dependencies.includeInJar "org.lwjgl:lwjgl-stb::$lwjglNatives"
+}
+
 dependencies {
     includeInJar platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
@@ -66,13 +75,16 @@ dependencies {
     includeInJar "org.lwjgl:lwjgl-openal"
     includeInJar "org.lwjgl:lwjgl-opengl"
     includeInJar "org.lwjgl:lwjgl-stb"
-    includeInJar "org.lwjgl:lwjgl::$lwjglNatives"
-    includeInJar "org.lwjgl:lwjgl-assimp::$lwjglNatives"
-    includeInJar "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    includeInJar "org.lwjgl:lwjgl-openal::$lwjglNatives"
-    includeInJar "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-    includeInJar "org.lwjgl:lwjgl-stb::$lwjglNatives"
     includeInJar "org.joml:joml:${jomlVersion}"
+
+    natives("natives-linux")
+    natives("natives-linux-arm64")
+    natives("natives-linux-arm32")
+    natives("natives-macos-arm64")
+    natives("natives-macos")
+    natives("natives-windows-arm64")
+    natives("natives-windows")
+    natives("natives-windows-x86")
 
     includeInJar "it.unimi.dsi:fastutil:8.5.11"
     includeInJar "org.openjdk.jol:jol-core:0.10"
