@@ -2,6 +2,8 @@
 
 This project, which I created for my "Facharbeit" (a small scientific paper mandatory for German students in higher grades), is a game inspired by the popular game "Minecraft". Using voxels that can be placed and removed individually, you can build, edit and demolish various structures, all in a procedurally generated world. The game is implemented with Java and OpenGL (using LWJGL). In particular, an octree is used to reduce the required amount of memory, and faces concealed between two blocks (which are unnecessary to render) are detected using a simple algorithm (the central subject of my paper was to analyze the impact of these optimizations on performance and memory usage).
 
+The textured used are licensed under CC BY 4.0 (https://piiixl.itch.io/textures).
+
 ## Building and running the project
 
 After cloning the repository, the project **should** be able to be built and run using the commands
