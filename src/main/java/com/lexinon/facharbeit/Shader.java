@@ -23,6 +23,7 @@ public class Shader {
         int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShaderId, vertexShaderCode);
         glCompileShader(vertexShaderId);
+        System.out.printf("Vertex shader compilation log (%s): %s\n", name, glGetShaderInfoLog(vertexShaderId));
 
         InputStream fragmentShaderInputStream = Game.class.getResourceAsStream(String.format("/%s.frag", name));
         Scanner fragmentShaderScanner = new Scanner(fragmentShaderInputStream);
@@ -37,11 +38,13 @@ public class Shader {
         int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShaderId, fragmentShaderCode);
         glCompileShader(fragmentShaderId);
+        System.out.printf("Fragment shader compilation log (%s): %s\n", name, glGetShaderInfoLog(fragmentShaderId));
 
         programId = glCreateProgram();
         glAttachShader(programId, vertexShaderId);
         glAttachShader(programId, fragmentShaderId);
         glLinkProgram(programId);
+        System.out.printf("Shader program linking log (%s): %s\n", name, glGetProgramInfoLog(programId));
     }
 
     public void use() {

@@ -10,8 +10,8 @@ float getFogFactor(float d) {
     const float fogMax = _replace_far_;
     const float fogMin = _replace_far_ * 0.9;
 
-    if (d>=fogMax) return 1;
-    if (d<=fogMin) return 0;
+    if (d>=fogMax) return 1.0;
+    if (d<=fogMin) return 0.0;
 
     return 1 - (fogMax - d) / (fogMax - fogMin);
 }
